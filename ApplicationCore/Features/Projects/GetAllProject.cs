@@ -14,10 +14,10 @@ public class GetAllProjectViewModel
 
 public interface IGetAllProjectService
 {
-    Task<GetAllProjectViewModel> Handle();
+    Task<GetAllProjectViewModel> HandleAsync();
 }
 
-internal class GetAllProjectService(
+public class GetAllProjectService(
     IProjectRepository projectRepository,
     IDevAppRepository devAppRepository,
     IGitService gitService,
@@ -29,7 +29,7 @@ internal class GetAllProjectService(
     private readonly IGitService gitService = gitService;
     private readonly IGroupRepository groupRepository = groupRepository;
 
-    public async Task<GetAllProjectViewModel> Handle()
+    public async Task<GetAllProjectViewModel> HandleAsync()
     {
         var projects = await this.projectRepository.GetAll();
         var devApps = await this.devAppRepository.GetAll();

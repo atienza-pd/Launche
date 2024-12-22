@@ -10,10 +10,11 @@ namespace Infrastructure.Database
         ICreateVersionsDbTable createVersionsDbTable,
         ICheckVersionIfExists checkVersionIfExists,
         IAddTableSchemaVersion addTableSchemaVersion
-        ) : IInitializedDatabaseMigration
+    ) : IInitializedDatabaseMigration
     {
         private readonly ICreateSqliteConnection createSqliteConnection = createSqliteConnection;
-        private readonly ICheckVersionTableIfExists checkVersionTableIfExists = checkVersionTableIfExists;
+        private readonly ICheckVersionTableIfExists checkVersionTableIfExists =
+            checkVersionTableIfExists;
         private readonly ICreateVersionsDbTable createVersionsDbTable = createVersionsDbTable;
         private readonly ICheckVersionIfExists checkVersionIfExists = checkVersionIfExists;
         private readonly IAddTableSchemaVersion addTableSchemaVersion = addTableSchemaVersion;
@@ -46,13 +47,15 @@ namespace Infrastructure.Database
             await this.RenameGroupTableToGroups(19);
             await this.AddForeignKeyReferenceToGroupIdInProjectPaths(20);
             await this.RenameProjectPathsTable(21);
-
         }
 
         private async Task RenameProjectPathsTable(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -67,28 +70,32 @@ namespace Infrastructure.Database
         private async Task AddForeignKeyReferenceToGroupIdInProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string query = "-- Create foreign key ProjectPaths_FK\r\n\r\n" +
-                "CREATE TEMPORARY TABLE temp AS\r\nSELECT *\r\nFROM ProjectPaths;\r\n\r\n" +
-                "DROP TABLE ProjectPaths;\r\n\r\n" +
-                "CREATE TABLE ProjectPaths " +
-                "(\r\n\tId INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "\r\n\t\"Path\" TEXT," +
-                "\r\n\tName TEXT," +
-                "\r\n\tIDEPathId INTEGER," +
-                "\r\n\tSortId INTEGER DEFAULT (0)," +
-                "\r\n\tFilename TEXT," +
-                "\r\n\tGroupId INTEGER," +
-                "\r\n\tCONSTRAINT FK_ProjectPaths_IDEPaths FOREIGN KEY (IDEPathId) " +
-                "REFERENCES IDEPaths(Id) ON DELETE RESTRICT ON UPDATE RESTRICT," +
-                "\r\n\tCONSTRAINT ProjectPaths_FK FOREIGN KEY (GroupId) " +
-                "REFERENCES Groups(Id) ON DELETE RESTRICT\r\n);\r\n\r\n" +
-                "INSERT INTO ProjectPaths\r\nSELECT *\r\nFROM temp;\r\n\r\n" +
-                "DROP TABLE temp;\r\n";
+            string query =
+                "-- Create foreign key ProjectPaths_FK\r\n\r\n"
+                + "CREATE TEMPORARY TABLE temp AS\r\nSELECT *\r\nFROM ProjectPaths;\r\n\r\n"
+                + "DROP TABLE ProjectPaths;\r\n\r\n"
+                + "CREATE TABLE ProjectPaths "
+                + "(\r\n\tId INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "\r\n\t\"Path\" TEXT,"
+                + "\r\n\tName TEXT,"
+                + "\r\n\tIDEPathId INTEGER,"
+                + "\r\n\tSortId INTEGER DEFAULT (0),"
+                + "\r\n\tFilename TEXT,"
+                + "\r\n\tGroupId INTEGER,"
+                + "\r\n\tCONSTRAINT FK_ProjectPaths_IDEPaths FOREIGN KEY (IDEPathId) "
+                + "REFERENCES IDEPaths(Id) ON DELETE RESTRICT ON UPDATE RESTRICT,"
+                + "\r\n\tCONSTRAINT ProjectPaths_FK FOREIGN KEY (GroupId) "
+                + "REFERENCES Groups(Id) ON DELETE RESTRICT\r\n);\r\n\r\n"
+                + "INSERT INTO ProjectPaths\r\nSELECT *\r\nFROM temp;\r\n\r\n"
+                + "DROP TABLE temp;\r\n";
             using var command = new SQLiteCommand(query, connection);
             await command.ExecuteNonQueryAsync();
 
@@ -98,7 +105,10 @@ namespace Infrastructure.Database
         private async Task RenameGroupTableToGroups(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -113,7 +123,10 @@ namespace Infrastructure.Database
         private async Task AddGroupIdToProjectsTable(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -128,12 +141,16 @@ namespace Infrastructure.Database
         private async Task AddGroupTable(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string query = "CREATE TABLE \"Group\" (\r\n\tId INTEGER PRIMARY KEY AUTOINCREMENT,\r\n\tName TEXT\r\n);\r\n";
+            string query =
+                "CREATE TABLE \"Group\" (\r\n\tId INTEGER PRIMARY KEY AUTOINCREMENT,\r\n\tName TEXT\r\n);\r\n";
             using var command = new SQLiteCommand(query, connection);
             await command.ExecuteNonQueryAsync();
 
@@ -143,7 +160,10 @@ namespace Infrastructure.Database
         private void AddFileNameField(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -158,7 +178,10 @@ namespace Infrastructure.Database
         private async Task UpdateSortIdToIncrement(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -186,7 +209,10 @@ namespace Infrastructure.Database
         private void AddSortIdToProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -201,12 +227,16 @@ namespace Infrastructure.Database
         private void SetIDEPathIdToNotNull(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string query = @"
+            string query =
+                @"
                 CREATE TEMPORARY TABLE temp AS
                     SELECT *
                     FROM ProjectPaths;
@@ -236,12 +266,16 @@ namespace Infrastructure.Database
         private void SeedDefaultIDEPathOnProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string query = @"UPDATE ProjectPaths SET IDEPathId  = (SELECT  Id FROM IDEPaths LIMIT 1);";
+            string query =
+                @"UPDATE ProjectPaths SET IDEPathId  = (SELECT  Id FROM IDEPaths LIMIT 1);";
             using var command = new SQLiteCommand(query, connection);
             command.ExecuteNonQuery();
 
@@ -251,12 +285,16 @@ namespace Infrastructure.Database
         private void AddForeignIDEPathIdToProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string query = @"
+            string query =
+                @"
                 CREATE TEMPORARY TABLE temp AS
                     SELECT *
                     FROM ProjectPaths;
@@ -286,7 +324,10 @@ namespace Infrastructure.Database
         private void AddColumnIDEPathIdToProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -301,7 +342,10 @@ namespace Infrastructure.Database
         private void RenameVsCodePathsTableToIDEPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -316,7 +360,10 @@ namespace Infrastructure.Database
         private void RemoveAllProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -331,12 +378,16 @@ namespace Infrastructure.Database
         private void SeedNewProjectPath(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string createTableSql = "INSERT INTO ProjectPaths ( Path, Name ) VALUES ( 'New Project Path Name', 'This is Project Path' )";
+            string createTableSql =
+                "INSERT INTO ProjectPaths ( Path, Name ) VALUES ( 'New Project Path Name', 'This is Project Path' )";
             using var command = new SQLiteCommand(createTableSql, connection);
             command.ExecuteNonQuery();
 
@@ -346,17 +397,20 @@ namespace Infrastructure.Database
         private void SeedInitialProjectPaths(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
 
-            string createTableSql = "INSERT INTO ProjectPaths ( Path, Name ) VALUES ( '...', '...' )";
+            string createTableSql =
+                "INSERT INTO ProjectPaths ( Path, Name ) VALUES ( '...', '...' )";
             using var command = new SQLiteCommand(createTableSql, connection);
             command.ExecuteNonQuery();
 
             this.addTableSchemaVersion.Execute(version);
-
         }
 
         private void AddNameOnProjectPathsTable(int version)
@@ -371,7 +425,6 @@ namespace Infrastructure.Database
                 using var command = new SQLiteCommand(createTableSql, connection);
                 command.ExecuteNonQuery();
 
-
                 this.addTableSchemaVersion.Execute(version);
             }
         }
@@ -379,7 +432,10 @@ namespace Infrastructure.Database
         private void SeedInitialVsCodePath(int version)
         {
             var isVersionExists = this.checkVersionIfExists.Execute(version);
-            if (isVersionExists) { return; }
+            if (isVersionExists)
+            {
+                return;
+            }
 
             using var connection = this.createSqliteConnection.Execute();
             connection.Open();
@@ -389,7 +445,6 @@ namespace Infrastructure.Database
             command.ExecuteNonQuery();
 
             this.addTableSchemaVersion.Execute(version);
-
         }
 
         private void AddVsCodePathsTable(int version)
@@ -400,7 +455,8 @@ namespace Infrastructure.Database
                 using var connection = this.createSqliteConnection.Execute();
                 connection.Open();
 
-                string createTableSql = "CREATE TABLE VsCodePaths (Id INTEGER PRIMARY KEY AUTOINCREMENT,Path TEXT)";
+                string createTableSql =
+                    "CREATE TABLE VsCodePaths (Id INTEGER PRIMARY KEY AUTOINCREMENT,Path TEXT)";
                 using var command = new SQLiteCommand(createTableSql, connection);
                 command.ExecuteNonQuery();
 
@@ -416,10 +472,10 @@ namespace Infrastructure.Database
                 using var connection = this.createSqliteConnection.Execute();
                 connection.Open();
 
-                string createTableSql = "CREATE TABLE ProjectPaths (Id INTEGER PRIMARY KEY AUTOINCREMENT,Path TEXT)";
+                string createTableSql =
+                    "CREATE TABLE ProjectPaths (Id INTEGER PRIMARY KEY AUTOINCREMENT,Path TEXT)";
                 using var command = new SQLiteCommand(createTableSql, connection);
                 command.ExecuteNonQuery();
-
 
                 this.addTableSchemaVersion.Execute(version);
             }
