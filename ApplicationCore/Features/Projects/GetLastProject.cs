@@ -19,8 +19,7 @@ internal class GetLastProject(IProjectRepository projectRepository) : IGetLastPr
             Name = project.Name,
             Path = project.Path,
             IDEPathId = project.IDEPathId,
-            Filename = project.Filename
+            Filename = project.Filename,
         };
     }
 }
-
