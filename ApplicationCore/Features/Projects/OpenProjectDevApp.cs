@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Common;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using ApplicationCore.Common;
 
 namespace ApplicationCore.Features.Projects;
 
@@ -16,9 +16,11 @@ public interface IOpenProjectDevAppService
     void Handle(OpenProjectDevAppCommand command);
 }
 
-internal class OpenProjectDevAppService(INotificationMessageService notificationMessageService) : IOpenProjectDevAppService
+internal class OpenProjectDevAppService(INotificationMessageService notificationMessageService)
+    : IOpenProjectDevAppService
 {
-    private readonly INotificationMessageService notificationMessageService = notificationMessageService;
+    private readonly INotificationMessageService notificationMessageService =
+        notificationMessageService;
 
     public void Handle(OpenProjectDevAppCommand command)
     {
@@ -26,7 +28,11 @@ internal class OpenProjectDevAppService(INotificationMessageService notification
         {
             if (!Directory.Exists(command.DirectoryPath))
             {
-                this.notificationMessageService.Create("Directory not found!", "Launch IDE Error", NotificationType.Error);
+                this.notificationMessageService.Create(
+                    "Directory not found!",
+                    "Launch IDE Error",
+                    NotificationType.Error
+                );
                 return;
             }
 
@@ -36,8 +42,7 @@ internal class OpenProjectDevAppService(INotificationMessageService notification
                 return;
             }
 
-            OpenIDE
-            (
+            OpenIDE(
                 new()
                 {
                     FileName = command.DevAppPath,
@@ -48,7 +53,11 @@ internal class OpenProjectDevAppService(INotificationMessageService notification
         }
         catch (Exception ex)
         {
-            notificationMessageService.Create(ex.Message, "Open Project Dev App", NotificationType.Error);
+            notificationMessageService.Create(
+                ex.Message,
+                "Open Project Dev App",
+                NotificationType.Error
+            );
         }
     }
 
@@ -56,12 +65,15 @@ internal class OpenProjectDevAppService(INotificationMessageService notification
     {
         if (File.Exists(fullFilePath) is false)
         {
-            notificationMessageService.Create("File not found!", "Open Project Error", NotificationType.Error);
+            notificationMessageService.Create(
+                "File not found!",
+                "Open Project Error",
+                NotificationType.Error
+            );
             return;
         }
 
-        OpenIDE
-        (
+        OpenIDE(
             new()
             {
                 FileName = devAppPath,
@@ -78,4 +90,3 @@ internal class OpenProjectDevAppService(INotificationMessageService notification
         process.Start();
     }
 }
-

@@ -7,16 +7,15 @@ public class SortDownProjectCommand
 
 public interface ISortDownProjectService
 {
-    Task<bool> Handle(SortDownProjectCommand command);
+    Task<bool> HandleAsync(SortDownProjectCommand command);
 }
 
-internal class SortDownProjectService(IProjectRepository projectRepository) : ISortDownProjectService
+public class SortDownProjectService(IProjectRepository projectRepository) : ISortDownProjectService
 {
     private readonly IProjectRepository projectRepository = projectRepository;
 
-    public async Task<bool> Handle(SortDownProjectCommand command)
+    public async Task<bool> HandleAsync(SortDownProjectCommand command)
     {
         return await projectRepository.SortDown(command.SortId);
     }
 }
-

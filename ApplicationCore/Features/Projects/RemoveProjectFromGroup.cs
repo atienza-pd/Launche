@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Common;
+
 namespace ApplicationCore.Features.Projects;
 
 public class RemoveProjectFromGroupCommand
@@ -9,7 +10,7 @@ public class RemoveProjectFromGroupCommand
 public interface IRemoveProjectFromGroupService
 {
     event EventHandler<RemoveProjectFromGroupEventArgs> Notify;
-    Task Handle(RemoveProjectFromGroupCommand command);
+    Task<bool> HandleAsync(RemoveProjectFromGroupCommand command);
 }
 
 public class RemoveProjectFromGroupEventArgs(long productId) : EventArgs
@@ -17,30 +18,28 @@ public class RemoveProjectFromGroupEventArgs(long productId) : EventArgs
     public long ProductId { get; } = productId;
 }
 
-internal class RemoveProjectFromGroupService
-(
+public class RemoveProjectFromGroupService(
     IProjectRepository projectRepository,
     INotificationMessageService notificationMessageService
-)
-    : IRemoveProjectFromGroupService
+) : IRemoveProjectFromGroupService
 {
     private readonly IProjectRepository projectRepository = projectRepository;
-    private readonly INotificationMessageService notificationMessageService = notificationMessageService;
+    private readonly INotificationMessageService notificationMessageService =
+        notificationMessageService;
     public event EventHandler<RemoveProjectFromGroupEventArgs>? Notify;
 
-    public async Task Handle(RemoveProjectFromGroupCommand command)
+    public async Task<bool> HandleAsync(RemoveProjectFromGroupCommand command)
     {
         var project = await projectRepository.GetOne(command.ProjectId);
 
         if (project == null)
         {
-            notificationMessageService.Create
-            (
+            notificationMessageService.Create(
                 "Project to remove not found!",
                 "Remove Project from Group",
                 NotificationType.Error
             );
-            return;
+            return false;
         }
 
         project.GroupId = null;
@@ -48,8 +47,7 @@ internal class RemoveProjectFromGroupService
         var result = await projectRepository.Edit(project);
         if (result)
         {
-            notificationMessageService.Create
-            (
+            notificationMessageService.Create(
                 "Project has been remove from group!",
                 "Remove Project from Group",
                 NotificationType.Error
@@ -57,7 +55,7 @@ internal class RemoveProjectFromGroupService
 
             this.Notify!.Invoke(this, new(project.Id));
         }
+
+        return true;
     }
 }
-
-

@@ -2,14 +2,14 @@
 
 public interface IGetLastProjectService
 {
-    Task<ProjectViewModel> GetLast();
+    Task<ProjectViewModel> HandleAsync();
 }
 
-internal class GetLastProject(IProjectRepository projectRepository) : IGetLastProjectService
+public class GetLastProject(IProjectRepository projectRepository) : IGetLastProjectService
 {
     private readonly IProjectRepository projectRepository = projectRepository;
 
-    public async Task<ProjectViewModel> GetLast()
+    public async Task<ProjectViewModel> HandleAsync()
     {
         var project = await this.projectRepository.GetLast();
 

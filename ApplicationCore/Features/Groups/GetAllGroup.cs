@@ -11,14 +11,14 @@ public class GetAllGroupQuery { }
 
 public interface IGetAllGroupService
 {
-    Task<GetAllGroupViewModel> Handle(GetAllGroupQuery query);
+    Task<GetAllGroupViewModel> HandleAsync(GetAllGroupQuery query);
 }
 
-internal class GetAllGroupService(IGroupRepository groupRepository) : IGetAllGroupService
+public class GetAllGroupService(IGroupRepository groupRepository) : IGetAllGroupService
 {
     private readonly IGroupRepository groupRepository = groupRepository;
 
-    public async Task<GetAllGroupViewModel> Handle(GetAllGroupQuery query)
+    public async Task<GetAllGroupViewModel> HandleAsync(GetAllGroupQuery query)
     {
         var groups = await groupRepository.GetAll();
 

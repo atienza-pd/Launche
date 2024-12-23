@@ -175,7 +175,7 @@ public class MainWindowPresenter
 
     private async void Presenter_SortDownProjectEvent(object? sender, EventArgs e)
     {
-        var result = await this.view.SortDownProjectService!.Handle(
+        var result = await this.view.SortDownProjectService!.HandleAsync(
             new() { SortId = this.view.MainWindowViewModel!.SelectedProjectPath!.SortId }
         );
 
@@ -205,7 +205,7 @@ public class MainWindowPresenter
 
     private async void Presenter_SortUpProjectEvent(object? sender, EventArgs e)
     {
-        var result = await this.view.SortUpProjectService!.Handle(
+        var result = await this.view.SortUpProjectService!.HandleAsync(
             new() { SortId = this.view.MainWindowViewModel!.SelectedProjectPath!.SortId }
         );
 
@@ -245,7 +245,7 @@ public class MainWindowPresenter
 
     private async Task Search()
     {
-        var searchViewModel = await this.view.SearchProjectService!.Handle(
+        var searchViewModel = await this.view.SearchProjectService!.HandleAsync(
             new() { Search = this.view.MainWindowViewModel!.Search }
         );
         this.view.MainWindowViewModel.EnableAddNewProject = searchViewModel.EnableAddNewProject;

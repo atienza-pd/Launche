@@ -137,7 +137,7 @@ public class MainWindowPresenterTests
             .Setup(x => x.AddProjectService!.HandleAsync(It.IsAny<AddProjectCommand>()))
             .ReturnsAsync(true);
         mockPresenter
-            .Setup(v => v.SearchProjectService!.Handle(It.IsAny<SearchProjectQuery>()))
+            .Setup(v => v.SearchProjectService!.HandleAsync(It.IsAny<SearchProjectQuery>()))
             .ReturnsAsync(new SearchProjectViewModel() { Projects = [new()] });
 
         // Act
@@ -166,7 +166,7 @@ public class MainWindowPresenterTests
             .Setup(x => x.EditProjectService!.HandleAsync(It.IsAny<EditProjectCommand>()))
             .ReturnsAsync(true);
         mockPresenter
-            .Setup(v => v.SearchProjectService!.Handle(It.IsAny<SearchProjectQuery>()))
+            .Setup(v => v.SearchProjectService!.HandleAsync(It.IsAny<SearchProjectQuery>()))
             .ReturnsAsync(new SearchProjectViewModel() { Projects = [new()] });
 
         // Act
@@ -192,10 +192,10 @@ public class MainWindowPresenterTests
             }
         );
         mockPresenter
-            .Setup(x => x.SortDownProjectService!.Handle(It.IsAny<SortDownProjectCommand>()))
+            .Setup(x => x.SortDownProjectService!.HandleAsync(It.IsAny<SortDownProjectCommand>()))
             .ReturnsAsync(true);
         mockPresenter
-            .Setup(v => v.SearchProjectService!.Handle(It.IsAny<SearchProjectQuery>()))
+            .Setup(v => v.SearchProjectService!.HandleAsync(It.IsAny<SearchProjectQuery>()))
             .ReturnsAsync(
                 new SearchProjectViewModel() { Projects = [new() { Id = 2 }, new() { Id = 1 }] }
             );
@@ -223,10 +223,10 @@ public class MainWindowPresenterTests
             }
         );
         mockPresenter
-            .Setup(x => x.SortUpProjectService!.Handle(It.IsAny<SortUpProjectCommand>()))
+            .Setup(x => x.SortUpProjectService!.HandleAsync(It.IsAny<SortUpProjectCommand>()))
             .ReturnsAsync(true);
         mockPresenter
-            .Setup(v => v.SearchProjectService!.Handle(It.IsAny<SearchProjectQuery>()))
+            .Setup(v => v.SearchProjectService!.HandleAsync(It.IsAny<SearchProjectQuery>()))
             .ReturnsAsync(
                 new SearchProjectViewModel() { Projects = [new() { Id = 1 }, new() { Id = 2 }] }
             );
@@ -250,7 +250,7 @@ public class MainWindowPresenterTests
         );
 
         mockPresenter
-            .Setup(x => x.SortDownProjectService!.Handle(It.IsAny<SortDownProjectCommand>()))
+            .Setup(x => x.SortDownProjectService!.HandleAsync(It.IsAny<SortDownProjectCommand>()))
             .ReturnsAsync(false);
 
         // Act
@@ -271,7 +271,7 @@ public class MainWindowPresenterTests
         );
 
         mockPresenter
-            .Setup(x => x.SortUpProjectService!.Handle(It.IsAny<SortUpProjectCommand>()))
+            .Setup(x => x.SortUpProjectService!.HandleAsync(It.IsAny<SortUpProjectCommand>()))
             .ReturnsAsync(false);
 
         // Act
@@ -319,7 +319,7 @@ public class MainWindowPresenterTests
         mockPresenter.SetupProperty(x => x.MainWindowViewModel, new() { ProjectPathModels = [] });
 
         mockPresenter
-            .Setup(x => x.SearchProjectService!.Handle(It.IsAny<SearchProjectQuery>()))
+            .Setup(x => x.SearchProjectService!.HandleAsync(It.IsAny<SearchProjectQuery>()))
             .ReturnsAsync(new SearchProjectViewModel() { Projects = [new() { Id = 1 }] });
 
         // Act
@@ -361,7 +361,7 @@ public class MainWindowPresenterTests
         );
 
         mockPresenter
-            .Setup(x => x.SearchProjectService!.Handle(It.IsAny<SearchProjectQuery>()))
+            .Setup(x => x.SearchProjectService!.HandleAsync(It.IsAny<SearchProjectQuery>()))
             .ReturnsAsync(new SearchProjectViewModel() { Projects = [] });
 
         mockPresenter
