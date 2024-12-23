@@ -40,7 +40,7 @@ public partial class GroupModalWindow : Window
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        var getAllGroupVm = await getAllGroupService!.Handle(new());
+        var getAllGroupVm = await getAllGroupService!.HandleAsync(new());
         ;
         dataContext.Groups = [.. getAllGroupVm.Groups];
         this.ListBoxGroup.SelectedItem = this
@@ -79,7 +79,7 @@ public partial class GroupModalWindow : Window
             return;
         }
 
-        await removeProjectToGroupService!.Handle(new() { ProjectId = ProjectPath.Id });
+        await removeProjectToGroupService!.HandleAsync(new() { ProjectId = ProjectPath.Id });
         this.ListBoxGroup.SelectedItem = null;
         dataContext.EnableSave = false;
         OnSave?.Invoke(this, EventArgs.Empty);

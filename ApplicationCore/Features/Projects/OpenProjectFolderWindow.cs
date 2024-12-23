@@ -1,7 +1,8 @@
-﻿using ApplicationCore.Common;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using ApplicationCore.Common;
 
 namespace ApplicationCore.Features.Projects;
+
 public class OpenProjectFolderWindowCommand
 {
     public string Path { get; set; } = "";
@@ -12,9 +13,12 @@ public interface IOpenProjectFolderWindowService
     void Handle(OpenProjectFolderWindowCommand command);
 }
 
-internal class OpenProjectFolderWindowService(INotificationMessageService notificationMessageService) : IOpenProjectFolderWindowService
+internal class OpenProjectFolderWindowService(
+    INotificationMessageService notificationMessageService
+) : IOpenProjectFolderWindowService
 {
-    private readonly INotificationMessageService notificationMessageService = notificationMessageService;
+    private readonly INotificationMessageService notificationMessageService =
+        notificationMessageService;
 
     public void Handle(OpenProjectFolderWindowCommand command)
     {
@@ -22,15 +26,20 @@ internal class OpenProjectFolderWindowService(INotificationMessageService notifi
         {
             if (!Directory.Exists(command.Path))
             {
-                this.notificationMessageService.Create("Directory not found!", "Open Project", NotificationType.Error);
+                this.notificationMessageService.Create(
+                    "Directory not found!",
+                    "Open Project",
+                    NotificationType.Error
+                );
                 return;
             }
-            ProcessStartInfo startInfo = new()
-            {
-                FileName = "explorer.exe",
-                Arguments = command.Path,
-                UseShellExecute = true,
-            };
+            ProcessStartInfo startInfo =
+                new()
+                {
+                    FileName = "explorer.exe",
+                    Arguments = command.Path,
+                    UseShellExecute = true,
+                };
             Process.Start(startInfo);
         }
         catch (Exception ex)
@@ -39,4 +48,3 @@ internal class OpenProjectFolderWindowService(INotificationMessageService notifi
         }
     }
 }
-

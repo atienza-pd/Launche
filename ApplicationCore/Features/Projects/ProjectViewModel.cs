@@ -13,16 +13,19 @@
         public bool EnableMoveUp { get; init; }
         public bool EnableMoveDown { get; init; }
         public bool EnableAddToGroup { get; init; } = true;
-        public bool EnabledGroupReset { get { return GroupId is not null; } }
+        public bool EnabledGroupReset
+        {
+            get { return GroupId is not null; }
+        }
         public string? GroupName { get; init; }
         public string CurrentGitBranch { get; set; } = "";
-        public string FullPath { get { return $@"{Path}\{Filename}"; } }
+        public string FullPath
+        {
+            get { return $@"{Path}\{Filename}"; }
+        }
         public bool HasFileName
         {
-            get
-            {
-                return Filename is not null && Filename is not "";
-            }
+            get { return Filename is not null && Filename is not ""; }
         }
 
         public string DevAppPath { get; set; } = string.Empty;

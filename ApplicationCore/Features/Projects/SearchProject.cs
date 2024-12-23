@@ -15,34 +15,33 @@ public class SearchProjectQuery
 
 public interface ISearchProjectService
 {
-    Task<SearchProjectViewModel> Handle(SearchProjectQuery query);
+    Task<SearchProjectViewModel> HandleAsync(SearchProjectQuery query);
 }
 
-internal class SearchProjectService
-(
+public class SearchProjectService(
     IProjectRepository projectRepository,
     IGroupRepository groupRepository,
     IDevAppRepository devAppRepository
-)
-    : ISearchProjectService
+) : ISearchProjectService
 {
     private readonly IProjectRepository projectRepository = projectRepository;
     private readonly IGroupRepository groupRepository = groupRepository;
     private readonly IDevAppRepository devAppRepository = devAppRepository;
 
-    public async Task<SearchProjectViewModel> Handle(SearchProjectQuery query)
+    public async Task<SearchProjectViewModel> HandleAsync(SearchProjectQuery query)
     {
         var projects = await projectRepository.GetAll();
         var groups = await groupRepository.GetAll();
         var devApps = await devAppRepository.GetAll();
-        var filteredPaths = projects.Where(projectPath => projectPath.Name.ToLower().Contains(query.Search.ToLower()));
+        var filteredPaths = projects.Where(projectPath =>
+            projectPath.Name.ToLower().Contains(query.Search.ToLower())
+        );
         SearchProjectViewModel vm = new();
 
         if (query.Search is not "")
         {
             vm.EnableAddNewProject = false;
-            vm.Projects = filteredPaths.Select
-            (
+            vm.Projects = filteredPaths.Select(
                 (project, index) =>
                 {
                     return new ProjectViewModel
@@ -58,9 +57,10 @@ internal class SearchProjectService
                         SortId = project.SortId,
                         GroupId = project.GroupId,
                         DevAppPath = devApps.First(devapp => devapp.Id == project.IDEPathId).Path,
-                        GroupName = groups.FirstOrDefault(group => group.Id == project.GroupId)?.Name,
+                        GroupName = groups
+                            .FirstOrDefault(group => group.Id == project.GroupId)
+                            ?.Name,
                         EnableAddToGroup = true,
-
                     };
                 }
             );
@@ -68,8 +68,7 @@ internal class SearchProjectService
         else
         {
             vm.EnableAddNewProject = true;
-            vm.Projects = filteredPaths.Select
-            (
+            vm.Projects = filteredPaths.Select(
                 (project, index) =>
                 {
                     var position = index + 1;
@@ -86,7 +85,9 @@ internal class SearchProjectService
                         SortId = project.SortId,
                         GroupId = project.GroupId,
                         DevAppPath = devApps.First(devapp => devapp.Id == project.IDEPathId).Path,
-                        GroupName = groups.FirstOrDefault(group => group.Id == project.GroupId)?.Name,
+                        GroupName = groups
+                            .FirstOrDefault(group => group.Id == project.GroupId)
+                            ?.Name,
                         EnableAddToGroup = true,
                     };
                 }
@@ -96,4 +97,3 @@ internal class SearchProjectService
         return vm;
     }
 }
-
