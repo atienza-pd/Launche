@@ -1,16 +1,16 @@
-﻿using System.Data.SQLite;
-using Infrastructure.Database;
+﻿using Infrastructure.Database;
 using Infrastructure.Models;
+using System.Data.SQLite;
 
 namespace Infrastructure.Repositories
 {
     public interface IDevAppRepository
     {
-        Task<bool> Add(IDEPath param);
-        Task<bool> Edit(IDEPath param);
+        Task<bool> Add(DevApp param);
+        Task<bool> Edit(DevApp param);
         Task<bool> Delete(long id);
-        Task<IDEPath> GetById(int id);
-        Task<IEnumerable<IDEPath>> GetAll();
+        Task<DevApp> GetById(int id);
+        Task<IEnumerable<DevApp>> GetAll();
     }
 
     public class DevAppRepository(ICreateSqliteConnection createSqliteConnection)
@@ -18,12 +18,12 @@ namespace Infrastructure.Repositories
     {
         private readonly ICreateSqliteConnection createSqliteConnection = createSqliteConnection;
 
-        public async Task<bool> Add(IDEPath param)
+        public async Task<bool> Add(DevApp param)
         {
-            var tableName = $"{nameof(IDEPath)}s";
+            var tableName = $"IdePaths";
             var connection = createSqliteConnection.Execute();
 
-            string createTableSql = $"INSERT INTO IDEPaths ( Path ) VALUES ( @path );";
+            string createTableSql = $"INSERT INTO IdePaths ( Path ) VALUES ( @path );";
             using var command = new SQLiteCommand(createTableSql, connection);
             command.Parameters.AddWithValue("@path", param.Path);
             var rows = await command.ExecuteNonQueryAsync();
@@ -48,15 +48,15 @@ namespace Infrastructure.Repositories
             return rows != 0;
         }
 
-        public async Task<bool> Edit(IDEPath param)
+        public async Task<bool> Edit(DevApp param)
         {
             return await Task.FromResult(true);
         }
 
-        public async Task<IEnumerable<IDEPath>> GetAll()
+        public async Task<IEnumerable<DevApp>> GetAll()
         {
-            var tableName = $"{nameof(IDEPath)}s";
-            var iDEPaths = new List<IDEPath>();
+            var tableName = $"IdePaths";
+            var iDEPaths = new List<DevApp>();
             var connection = createSqliteConnection.Execute();
 
             using var command = connection.CreateCommand();
@@ -64,8 +64,8 @@ namespace Infrastructure.Repositories
             using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {
-                _ = int.TryParse(reader[nameof(IDEPath.Id)]?.ToString(), out int id);
-                var path = reader[nameof(IDEPath.Path)]?.ToString() ?? "";
+                _ = int.TryParse(reader[nameof(DevApp.Id)]?.ToString(), out int id);
+                var path = reader[nameof(DevApp.Path)]?.ToString() ?? "";
 
                 iDEPaths.Add(new() { Id = id, Path = path });
             }
@@ -73,10 +73,10 @@ namespace Infrastructure.Repositories
             return iDEPaths;
         }
 
-        public async Task<IDEPath> GetById(int id)
+        public async Task<DevApp> GetById(int id)
         {
-            var tableName = $"{nameof(IDEPath)}s";
-            var vsCodePath = new IDEPath();
+            var tableName = $"IdePaths";
+            var vsCodePath = new DevApp();
             var connection = createSqliteConnection.Execute();
 
             using var command = connection.CreateCommand();
@@ -84,7 +84,7 @@ namespace Infrastructure.Repositories
             using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {
-                var path = reader[nameof(Infrastructure.Models.IDEPath.Path)]?.ToString() ?? "";
+                var path = reader[nameof(Infrastructure.Models.DevApp.Path)]?.ToString() ?? "";
 
                 vsCodePath.Id = id;
                 vsCodePath.Path = path;

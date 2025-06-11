@@ -13,7 +13,9 @@
     WindowStyle="SingleBorderWindow"
     mc:Ignorable="d">
     <Grid Margin="5,2,5,0">
+
         <Grid.RowDefinitions>
+            <RowDefinition Height="26" />
             <RowDefinition Height="33" />
             <RowDefinition Height="23" />
             <RowDefinition Height="28" />
@@ -24,8 +26,14 @@
             <RowDefinition Height="28" />
             <RowDefinition />
         </Grid.RowDefinitions>
-
+        <Menu Height="26" VerticalAlignment="Center">
+            <MenuItem
+                Padding="6,3,6,6"
+                Click="MenuItem_ShowDevApps_Click"
+                Header="_Dev Apps" />
+        </Menu>
         <Grid
+            Grid.Row="1"
             Height="26"
             VerticalAlignment="Center"
             Background="#404040">
@@ -58,7 +66,7 @@
                 </Button.Resources>
             </Button>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -94,7 +102,7 @@
             </Button>
         </Grid>
         <Grid
-            Grid.Row="2"
+            Grid.Row="3"
             Height="23"
             Margin="0,5,0,0"
             VerticalAlignment="Top"
@@ -156,7 +164,7 @@
             </Button>
         </Grid>
         <Grid
-            Grid.Row="3"
+            Grid.Row="4"
             Height="26"
             VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
@@ -178,7 +186,7 @@
         </Grid>
 
 
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -215,7 +223,7 @@
                 </Button.Resources>
             </Button>
         </Grid>
-        <Grid Grid.Row="5">
+        <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -242,9 +250,9 @@
                 TextWrapping="NoWrap" />
         </Grid>
 
-        <Label Grid.Row="6" Content="{Binding SelectedProjectPath.CurrentGitBranch}" />
+        <Label Grid.Row="7" Content="{Binding SelectedProjectPath.CurrentGitBranch}" />
 
-        <Grid Grid.Row="7">
+        <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="107" />
@@ -268,7 +276,7 @@
         </Grid>
         <ListView
             x:Name="lvProjectPaths"
-            Grid.Row="8"
+            Grid.Row="9"
             Margin="0,0,0,5"
             ItemsSource="{Binding ProjectPathModels, UpdateSourceTrigger=PropertyChanged}"
             KeyDown="lvProjectPaths_KeyDown"

@@ -14,7 +14,7 @@ public class EditDevAppTests
         // Arrange
         var stubDevAppRepository = new Mock<IDevAppRepository>();
 
-        stubDevAppRepository.Setup(x => x.Edit(It.IsAny<IDEPath>())).ReturnsAsync(true);
+        stubDevAppRepository.Setup(x => x.Edit(It.IsAny<DevApp>())).ReturnsAsync(true);
 
         var sut = new EditDevAppService(stubDevAppRepository.Object);
 

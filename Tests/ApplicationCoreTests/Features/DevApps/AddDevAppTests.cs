@@ -16,7 +16,7 @@ public class AddDevAppTests
         var stubDevAppRepository = new Mock<IDevAppRepository>();
         var stubNotificationMessageService = new Mock<INotificationMessageService>();
 
-        stubDevAppRepository.Setup(x => x.Add(It.IsAny<IDEPath>())).ReturnsAsync(true);
+        stubDevAppRepository.Setup(x => x.Add(It.IsAny<DevApp>())).ReturnsAsync(true);
 
         var sut = new AddDevAppService(
             stubDevAppRepository.Object,

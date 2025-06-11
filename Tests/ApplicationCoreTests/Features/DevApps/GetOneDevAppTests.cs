@@ -14,7 +14,7 @@ public class GetOneDevAppTests
         // Arrange
         var stubDevAppRepository = new Mock<IDevAppRepository>();
 
-        stubDevAppRepository.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new IDEPath());
+        stubDevAppRepository.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new DevApp());
 
         var sut = new GetOneDevAppService(stubDevAppRepository.Object);
 
