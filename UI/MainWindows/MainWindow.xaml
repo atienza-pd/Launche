@@ -327,7 +327,7 @@
                             DisplayMemberBinding="{Binding Path=Index}"
                             Header="#" />
                         <GridViewColumn
-                            Width="Auto"
+                            Width="0"
                             DisplayMemberBinding="{Binding Path=GroupName}"
                             HeaderContainerStyle="{StaticResource HeaderStyle}"
                             HeaderTemplate="{StaticResource GroupTemplate}" />

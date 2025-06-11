@@ -1,13 +1,13 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using ApplicationCore.Features.DevApps;
+﻿using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Git;
 using ApplicationCore.Features.Groups;
 using ApplicationCore.Features.Projects;
 using Infrastructure.Models;
 using Infrastructure.ViewModels;
 using Microsoft.Win32;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using UI.Windows.Group;
 
 namespace UI.MainWindows;
@@ -143,6 +143,14 @@ public partial class MainWindow : Window, IMainWindowView
         DataContext = MainWindowViewModel;
     }
 
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        SearchProjectEvent.Invoke(this, EventArgs.Empty);
+        FetchDevAppsEvent!.Invoke(this, EventArgs.Empty);
+        NewProjectEvent.Invoke(this, EventArgs.Empty);
+
+    }
+
     public void FocusOnListViewWhenArrowDown()
     {
         if (lvProjectPaths.Items.Count == 0)
@@ -173,12 +181,6 @@ public partial class MainWindow : Window, IMainWindowView
             );
 
         lvProjectPaths.ScrollIntoView(this.lvProjectPaths.SelectedItem);
-    }
-
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-        SearchProjectEvent.Invoke(this, EventArgs.Empty);
-        FetchDevAppsEvent!.Invoke(this, EventArgs.Empty);
     }
 
     private void VsCodePathOpenDialogButton_Click(object sender, RoutedEventArgs e)

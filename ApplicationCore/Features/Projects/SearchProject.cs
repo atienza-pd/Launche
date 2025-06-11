@@ -60,7 +60,7 @@ public class SearchProjectService(
                         GroupName = groups
                             .FirstOrDefault(group => group.Id == project.GroupId)
                             ?.Name,
-                        EnableAddToGroup = true,
+                        EnableAddToGroup = false,
                     };
                 }
             );

@@ -21,8 +21,7 @@ namespace Infrastructure.Repositories
         public async Task<bool> Add(IDEPath param)
         {
             var tableName = $"{nameof(IDEPath)}s";
-            using var connection = createSqliteConnection.Execute();
-            connection.Open();
+            var connection = createSqliteConnection.Execute();
 
             string createTableSql = $"INSERT INTO IDEPaths ( Path ) VALUES ( @path );";
             using var command = new SQLiteCommand(createTableSql, connection);
@@ -34,9 +33,7 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> Delete(long id)
         {
-            using var connection = createSqliteConnection.Execute();
-
-            connection.Open();
+            var connection = createSqliteConnection.Execute();
 
             string createTableSql =
                 @"
@@ -58,20 +55,17 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<IDEPath>> GetAll()
         {
-            var tableName = $"{nameof(Infrastructure.Models.IDEPath)}s";
-            var iDEPaths = new List<Infrastructure.Models.IDEPath>();
+            var tableName = $"{nameof(IDEPath)}s";
+            var iDEPaths = new List<IDEPath>();
             var connection = createSqliteConnection.Execute();
-            connection.Open();
+
             using var command = connection.CreateCommand();
             command.CommandText = $"SELECT * FROM {tableName}";
             using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {
-                _ = int.TryParse(
-                    reader[nameof(Infrastructure.Models.IDEPath.Id)]?.ToString(),
-                    out int id
-                );
-                var path = reader[nameof(Infrastructure.Models.IDEPath.Path)]?.ToString() ?? "";
+                _ = int.TryParse(reader[nameof(IDEPath.Id)]?.ToString(), out int id);
+                var path = reader[nameof(IDEPath.Path)]?.ToString() ?? "";
 
                 iDEPaths.Add(new() { Id = id, Path = path });
             }
@@ -82,9 +76,9 @@ namespace Infrastructure.Repositories
         public async Task<IDEPath> GetById(int id)
         {
             var tableName = $"{nameof(IDEPath)}s";
-            var vsCodePath = new Infrastructure.Models.IDEPath();
+            var vsCodePath = new IDEPath();
             var connection = createSqliteConnection.Execute();
-            connection.Open();
+
             using var command = connection.CreateCommand();
             command.CommandText = $"SELECT * FROM {tableName} LIMIT 1";
             using var reader = await command.ExecuteReaderAsync();

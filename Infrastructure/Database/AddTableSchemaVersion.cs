@@ -1,23 +1,22 @@
 ﻿using System.Data.SQLite;
 
-namespace Infrastructure.Database
+namespace Infrastructure.Database;
+
+public interface IAddTableSchemaVersion : IExecute<int, int>;
+
+public class AddTableSchemaVersion(ICreateSqliteConnection createSqliteConnection)
+    : IAddTableSchemaVersion
 {
-    public interface IAddTableSchemaVersion : IExecute<int, int>;
+    private readonly ICreateSqliteConnection createSqliteConnection = createSqliteConnection;
 
-    public class AddTableSchemaVersion(ICreateSqliteConnection createSqliteConnection) : IAddTableSchemaVersion
+    public int Execute(int number)
     {
-        private readonly ICreateSqliteConnection createSqliteConnection = createSqliteConnection;
+        var connection = this.createSqliteConnection.Execute();
 
-        public int Execute(int number)
-        {
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+        string createTableSql = $"INSERT INTO Versions (Version) VALUES ({number})";
+        using var command = new SQLiteCommand(createTableSql, connection);
+        var rows = command.ExecuteNonQuery();
 
-            string createTableSql = $"INSERT INTO Versions (Version) VALUES ({number})";
-            using var command = new SQLiteCommand(createTableSql, connection);
-            var rows = command.ExecuteNonQuery();
-
-            return rows;
-        }
+        return rows;
     }
 }

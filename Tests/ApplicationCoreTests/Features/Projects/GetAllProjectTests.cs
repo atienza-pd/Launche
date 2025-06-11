@@ -15,7 +15,7 @@ namespace Tests.ApplicationCoreTests.Features.Projects
             // Arrange
             var stubProjectRepository = new Mock<IProjectRepository>();
             var stubDevAppRepository = new Mock<IDevAppRepository>();
-            var stubGitRepository = new Mock<IGitService>();
+            var stubGitRepository = new Mock<IGitRepository>();
             var stubGroupRepository = new Mock<IGroupRepository>();
             stubProjectRepository
                 .Setup(x => x.GetAll())

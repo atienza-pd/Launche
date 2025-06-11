@@ -7,9 +7,9 @@ namespace ApplicationCore.Features.Git
         IGetCurrentGitBranchService CreateGetCurrentGitBranchService();
     }
 
-    internal class GitFeaturesCreator(IGitService gitService) : IGitFeaturesCreator
+    internal class GitFeaturesCreator(IGitRepository gitService) : IGitFeaturesCreator
     {
-        private readonly IGitService gitService = gitService;
+        private readonly IGitRepository gitService = gitService;
 
         public IGetCurrentGitBranchService CreateGetCurrentGitBranchService()
         {

@@ -23,8 +23,8 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
 
     public async Task<bool> Add(Project param)
     {
-        using var connection = createSqliteConnection.Execute();
-        connection.Open();
+        var connection = createSqliteConnection.Execute();
+
         string createTableSql =
             @$"
                 PRAGMA foreign_keys = ON; 
@@ -47,9 +47,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
 
     public async Task<bool> Edit(Project param)
     {
-        using var connection = createSqliteConnection.Execute();
-
-        connection.Open();
+        var connection = createSqliteConnection.Execute();
 
         string createTableSql =
             @$"PRAGMA foreign_keys = ON;
@@ -77,9 +75,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
 
     public async Task<bool> Delete(long id)
     {
-        using var connection = createSqliteConnection.Execute();
-
-        connection.Open();
+        var connection = createSqliteConnection.Execute();
 
         string createTableSql = $"DELETE FROM {TABLE} WHERE Id = @id;";
 
@@ -93,25 +89,20 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
 
     public async Task<Project> GetLast()
     {
-        var tableName = $"{nameof(Infrastructure.Models.Project)}s";
-        var projectPath = new Infrastructure.Models.Project();
+        var tableName = $"{nameof(Project)}s";
+        var projectPath = new Project();
         var connection = createSqliteConnection.Execute();
-        connection.Open();
+
         using var command = connection.CreateCommand();
         command.CommandText = $"SELECT * FROM {nameof(Project)}s ORDER BY Id DESC LIMIT 1;";
         using var reader = await command.ExecuteReaderAsync();
         while (reader.Read())
         {
-            _ = int.TryParse(
-                reader[nameof(Infrastructure.Models.Project.Id)]?.ToString(),
-                out int id
-            );
-            var path = reader[nameof(Infrastructure.Models.Project.Path)]?.ToString() ?? "";
-            var name = reader[nameof(Infrastructure.Models.Project.Name)]?.ToString() ?? "";
-            var idePathId = int.Parse(
-                reader[nameof(Infrastructure.Models.Project.IDEPathId)]?.ToString() ?? "0"
-            );
-            var filename = reader[nameof(Infrastructure.Models.Project.Filename)]?.ToString() ?? "";
+            _ = int.TryParse(reader[nameof(Project.Id)]?.ToString(), out int id);
+            var path = reader[nameof(Project.Path)]?.ToString() ?? "";
+            var name = reader[nameof(Project.Name)]?.ToString() ?? "";
+            var idePathId = int.Parse(reader[nameof(Project.IDEPathId)]?.ToString() ?? "0");
+            var filename = reader[nameof(Project.Filename)]?.ToString() ?? "";
 
             projectPath.Id = id;
             projectPath.Path = path;
@@ -127,21 +118,20 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
     {
         List<Project> projectPaths = [];
         var connection = createSqliteConnection.Execute();
-        connection.Open();
+
         using var command = connection.CreateCommand();
         command.CommandText = $"SELECT * FROM {nameof(Project)}s ORDER BY SortId";
         using var reader = await command.ExecuteReaderAsync();
         while (reader.Read())
         {
-            var id = int.Parse(reader[nameof(Infrastructure.Models.Project.Id)]?.ToString() ?? "0");
-            var path = reader[nameof(Infrastructure.Models.Project.Path)]?.ToString() ?? "";
-            var name = reader[nameof(Infrastructure.Models.Project.Name)]?.ToString() ?? "";
-            var idePathId =
-                reader[nameof(Infrastructure.Models.Project.IDEPathId)]?.ToString() ?? "";
-            var sortId = reader[nameof(Infrastructure.Models.Project.SortId)]?.ToString() ?? "";
-            var fileName = reader[nameof(Infrastructure.Models.Project.Filename)]?.ToString() ?? "";
+            var id = int.Parse(reader[nameof(Project.Id)]?.ToString() ?? "0");
+            var path = reader[nameof(Project.Path)]?.ToString() ?? "";
+            var name = reader[nameof(Project.Name)]?.ToString() ?? "";
+            var idePathId = reader[nameof(Project.IDEPathId)]?.ToString() ?? "";
+            var sortId = reader[nameof(Project.SortId)]?.ToString() ?? "";
+            var fileName = reader[nameof(Project.Filename)]?.ToString() ?? "";
             var isGroupId = int.TryParse(
-                reader[nameof(Infrastructure.Models.Project.GroupId)]?.ToString(),
+                reader[nameof(Project.GroupId)]?.ToString(),
                 out int groupId
             );
 
@@ -166,7 +156,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
     {
         var projectPath = new Project();
         var connection = createSqliteConnection.Execute();
-        connection.Open();
+
         using var command = connection.CreateCommand();
         command.CommandText = $"SELECT * FROM {TABLE} WHERE ID = @id;";
         command.Parameters.AddWithValue("@id", id);
@@ -178,7 +168,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
             var idePathId = int.Parse(reader[nameof(Project.IDEPathId)]?.ToString() ?? "0");
             var filename = reader[nameof(Project.Filename)]?.ToString() ?? "";
             var isGroupId = int.TryParse(
-                reader[nameof(Infrastructure.Models.Project.GroupId)]?.ToString(),
+                reader[nameof(Project.GroupId)]?.ToString(),
                 out int groupId
             );
 
@@ -195,9 +185,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
 
     public async Task<bool> SortUp(int sortId)
     {
-        using var connection = createSqliteConnection.Execute();
-
-        connection.Open();
+        var connection = createSqliteConnection.Execute();
 
         string createTableSql =
             @$"
@@ -218,9 +206,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
 
     public async Task<bool> SortDown(int sortId)
     {
-        using var connection = createSqliteConnection.Execute();
-
-        connection.Open();
+        var connection = createSqliteConnection.Execute();
 
         string createTableSql =
             @$"

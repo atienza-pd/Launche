@@ -12,9 +12,9 @@ public interface IGetCurrentGitBranchService
     string Handle(GetCurrentGitBranchQuery query);
 }
 
-public class GetCurrentGitBranchService(IGitService gitService) : IGetCurrentGitBranchService
+public class GetCurrentGitBranchService(IGitRepository gitService) : IGetCurrentGitBranchService
 {
-    private readonly IGitService gitService = gitService;
+    private readonly IGitRepository gitService = gitService;
 
     public string Handle(GetCurrentGitBranchQuery query)
     {

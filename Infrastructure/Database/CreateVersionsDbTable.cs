@@ -1,25 +1,22 @@
 ﻿using System.Data.SQLite;
 
-namespace Infrastructure.Database
+namespace Infrastructure.Database;
+
+public interface ICreateVersionsDbTable : IExecute;
+
+public class CreateVersionsDbTable(ICreateSqliteConnection createSqliteConnection)
+    : ICreateVersionsDbTable
 {
-    public interface ICreateVersionsDbTable : IExecute;
+    private readonly ICreateSqliteConnection createSqliteConnection = createSqliteConnection;
 
-
-    public class CreateVersionsDbTable(ICreateSqliteConnection createSqliteConnection) : ICreateVersionsDbTable
+    public void Execute()
     {
-        private readonly ICreateSqliteConnection createSqliteConnection = createSqliteConnection;
+        var connection = this.createSqliteConnection.Execute();
 
-        public void Execute()
-        {
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+        string createTableSql =
+            @"CREATE TABLE Versions (Id INTEGER PRIMARY KEY AUTOINCREMENT, Version TEXT)";
+        using var command = new SQLiteCommand(createTableSql, connection);
 
-            string createTableSql = @"CREATE TABLE Versions (Id INTEGER PRIMARY KEY AUTOINCREMENT, Version TEXT)";
-            using var command = new SQLiteCommand(createTableSql, connection);
-
-
-            command.ExecuteNonQuery();
-            connection.Close();
-        }
+        command.ExecuteNonQuery();
     }
 }
