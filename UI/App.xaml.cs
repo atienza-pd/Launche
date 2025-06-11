@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using ApplicationCore;
+﻿using ApplicationCore;
 using ApplicationCore.Common;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 using UI.MainWindows;
 
 namespace UI
@@ -56,6 +56,7 @@ namespace UI
             return services
                 .AddApplicationCoreServiceCollection()
                 .AddSingleton<MainWindow>()
+                .AddTransient<DevAppsWindow>()
                 .BuildServiceProvider();
         }
     }

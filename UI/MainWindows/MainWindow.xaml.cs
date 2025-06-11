@@ -4,6 +4,7 @@ using ApplicationCore.Features.Groups;
 using ApplicationCore.Features.Projects;
 using Infrastructure.Models;
 using Infrastructure.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,6 +40,7 @@ public partial class MainWindow : Window, IMainWindowView
     private readonly ISortDownProjectService? sortDownProjectService;
     private GroupModalWindow? groupModalWindow;
     private readonly List<Group> groups = [];
+    private readonly IServiceProvider serviceProvider;
 
     public string DevAppFilePath { get; set; } = "";
 
@@ -104,7 +106,8 @@ public partial class MainWindow : Window, IMainWindowView
         IDevAppFeaturesCreator devAppFeaturesCreator,
         IProjectFeaturesCreator projectFeaturesCreator,
         IGitFeaturesCreator gitFeaturesCreator,
-        IGroupFeaturesCreator groupFeaturesCreator
+        IGroupFeaturesCreator groupFeaturesCreator,
+        IServiceProvider serviceProvider
     )
     {
         #region Dev App Services
@@ -141,6 +144,7 @@ public partial class MainWindow : Window, IMainWindowView
         InitializeComponent();
         var presenter = new MainWindowPresenter(this);
         DataContext = MainWindowViewModel;
+        this.serviceProvider = serviceProvider;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -295,5 +299,17 @@ public partial class MainWindow : Window, IMainWindowView
     public void ShowNoSelectedProjectMessage()
     {
         MessageBox.Show("No Selected Project", "Select Project", MessageBoxButton.OK);
+    }
+
+    private void MenuItem_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void MenuItem_ShowDevApps_Click(object sender, RoutedEventArgs e)
+    {
+
+        var mainWindow = serviceProvider.GetService<DevAppsWindow>();
+        mainWindow.ShowDialog();
     }
 }

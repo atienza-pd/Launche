@@ -13,6 +13,12 @@ public static class CoreServiceCollection
         this IServiceCollection services
     ) =>
         services
+            .AddSingleton<IAddDevAppService, AddDevAppService>()
+            .AddSingleton<IEditDevAppService, EditDevAppService>()
+            .AddSingleton<IDeleteDevAppService, DeleteDevAppService>()
+            .AddSingleton<IGetAllDevAppService, GetAllDevAppService>()
+            .AddSingleton<IGetOneDevAppService, GetOneDevAppService>()
+
             .AddSingleton<IGroupFeaturesCreator, GroupFeaturesCreator>()
             .AddSingleton<IDevAppFeaturesCreator, DevAppFeaturesCreator>()
             .AddSingleton<INotificationMessageService, NotificationMessageService>()

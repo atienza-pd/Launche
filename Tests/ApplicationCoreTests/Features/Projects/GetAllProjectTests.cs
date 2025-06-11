@@ -21,7 +21,7 @@ namespace Tests.ApplicationCoreTests.Features.Projects
                 .Setup(x => x.GetAll())
                 .ReturnsAsync([new Project() { Id = 1, GroupId = 1 }]);
 
-            stubDevAppRepository.Setup(x => x.GetAll()).ReturnsAsync([new IDEPath()]);
+            stubDevAppRepository.Setup(x => x.GetAll()).ReturnsAsync([new DevApp()]);
             stubGroupRepository
                 .Setup(x => x.GetAll())
                 .ReturnsAsync([new Group() { Id = 1, Name = "Name" }]);
