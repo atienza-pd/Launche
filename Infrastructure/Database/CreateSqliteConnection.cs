@@ -1,28 +1,37 @@
 ﻿using System.Data.SQLite;
 using System.Reflection;
 
-namespace Infrastructure.Database
+namespace Infrastructure.Database;
+
+public interface ICreateSqliteConnection : IExecute<SQLiteConnection>;
+
+public class CreateSqliteConnection : ICreateSqliteConnection, IDisposable
 {
-    public interface ICreateSqliteConnection : IExecute<SQLiteConnection>;
+    private SQLiteConnection _connection;
 
-    public class CreateSqliteConnection : ICreateSqliteConnection
+    public CreateSqliteConnection()
     {
-        public SQLiteConnection Execute()
+        var fullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var path = @$"{fullPath}\file.db";
+        var connectionString = $"Data Source={path}";
+        if (!System.IO.File.Exists(path))
         {
-            var fullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var path = @$"{fullPath}\file.db";
-            var connectionString = $"Data Source={path}";
-            if (!System.IO.File.Exists(path))
-            {
-                Console.WriteLine("Creating Sync DB...");
-                SQLiteConnection.CreateFile(path);
-            }
-
-
-            var connection = new SQLiteConnection(connectionString);
-
-
-            return connection;
+            Console.WriteLine("Creating Sync DB...");
+            SQLiteConnection.CreateFile(path);
         }
+
+        _connection = new SQLiteConnection(connectionString);
+        _connection.Open();
+    }
+
+    public void Dispose()
+    {
+        _connection.Close();
+        GC.SuppressFinalize(this);
+    }
+
+    public SQLiteConnection Execute()
+    {
+        return _connection;
     }
 }

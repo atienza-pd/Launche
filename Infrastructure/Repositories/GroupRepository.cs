@@ -1,6 +1,6 @@
-﻿using Infrastructure.Database;
+﻿using System.Data.SQLite;
+using Infrastructure.Database;
 using Infrastructure.Models;
-using System.Data.SQLite;
 
 namespace Infrastructure.Repositories;
 
@@ -20,11 +20,10 @@ public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : I
 
     public async Task<bool> Add(Group param)
     {
-        using var connection = createSqliteConnection.Execute();
+        var connection = createSqliteConnection.Execute();
 
-        connection.Open();
-
-        string createTableSql = @$"
+        string createTableSql =
+            @$"
                 PRAGMA foreign_keys = ON; 
                 INSERT INTO {TABLE}(Name) VALUES (@name);";
 
@@ -39,8 +38,7 @@ public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : I
 
     public async Task<bool> Edit(Group param)
     {
-        using var connection = createSqliteConnection.Execute();
-        connection.Open();
+        var connection = createSqliteConnection.Execute();
 
         string createTableSql = @$"UPDATE {TABLE} SET Name = @name WHERE Id = @id;";
 
@@ -55,11 +53,10 @@ public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : I
 
     public async Task<bool> Delete(long id)
     {
-        using var connection = createSqliteConnection.Execute();
+        var connection = createSqliteConnection.Execute();
 
-        connection.Open();
-
-        string createTableSql = @$"
+        string createTableSql =
+            @$"
                 PRAGMA foreign_keys = ON;
                 DELETE FROM {TABLE} WHERE Id = @id;";
 
@@ -76,7 +73,7 @@ public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : I
         var tableName = $"{nameof(Group)}s";
         var groups = new List<Group>();
         var connection = createSqliteConnection.Execute();
-        connection.Open();
+
         using var command = connection.CreateCommand();
         command.CommandText = $"SELECT * FROM {tableName}";
         using var reader = await command.ExecuteReaderAsync();
@@ -96,7 +93,7 @@ public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : I
         var tableName = $"{nameof(Group)}s";
         var group = new Group();
         var connection = createSqliteConnection.Execute();
-        connection.Open();
+
         using var command = connection.CreateCommand();
         command.Parameters.AddWithValue("@id", id);
         command.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
@@ -112,4 +109,3 @@ public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : I
         return group;
     }
 }
-

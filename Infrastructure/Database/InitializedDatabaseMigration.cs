@@ -57,8 +57,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE ProjectPaths RENAME TO Projects;\r\n";
             using var command = new SQLiteCommand(query, connection);
@@ -75,8 +74,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query =
                 "-- Create foreign key ProjectPaths_FK\r\n\r\n"
@@ -110,8 +108,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE \"Group\" RENAME TO Groups;\r\n";
             using var command = new SQLiteCommand(query, connection);
@@ -128,8 +125,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE ProjectPaths ADD GroupId INTEGER;\r\n";
             using var command = new SQLiteCommand(query, connection);
@@ -146,8 +142,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query =
                 "CREATE TABLE \"Group\" (\r\n\tId INTEGER PRIMARY KEY AUTOINCREMENT,\r\n\tName TEXT\r\n);\r\n";
@@ -165,8 +160,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE ProjectPaths ADD Filename TEXT;";
             using var command = new SQLiteCommand(query, connection);
@@ -183,8 +177,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             using var command = connection.CreateCommand();
             command.CommandText = $"SELECT * FROM ProjectPaths";
@@ -214,8 +207,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE ProjectPaths ADD SortId INTEGER DEFAULT(0);";
             using var command = new SQLiteCommand(query, connection);
@@ -232,8 +224,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query =
                 @"
@@ -271,8 +262,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query =
                 @"UPDATE ProjectPaths SET IDEPathId  = (SELECT  Id FROM IDEPaths LIMIT 1);";
@@ -290,8 +280,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query =
                 @"
@@ -329,8 +318,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE ProjectPaths ADD IDEPathId INTEGER;";
             using var command = new SQLiteCommand(query, connection);
@@ -347,8 +335,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string query = "ALTER TABLE VsCodePaths RENAME TO IDEPaths;";
             using var command = new SQLiteCommand(query, connection);
@@ -365,8 +352,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string createTableSql = "DELETE FROM ProjectPaths;";
             using var command = new SQLiteCommand(createTableSql, connection);
@@ -383,8 +369,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string createTableSql =
                 "INSERT INTO ProjectPaths ( Path, Name ) VALUES ( 'New Project Path Name', 'This is Project Path' )";
@@ -402,8 +387,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string createTableSql =
                 "INSERT INTO ProjectPaths ( Path, Name ) VALUES ( '...', '...' )";
@@ -418,8 +402,7 @@ namespace Infrastructure.Database
             var isVersionExists = this.checkVersionIfExists.Execute(version);
             if (!isVersionExists)
             {
-                using var connection = this.createSqliteConnection.Execute();
-                connection.Open();
+                var connection = this.createSqliteConnection.Execute();
 
                 string createTableSql = "ALTER TABLE ProjectPaths ADD Name TEXT";
                 using var command = new SQLiteCommand(createTableSql, connection);
@@ -437,8 +420,7 @@ namespace Infrastructure.Database
                 return;
             }
 
-            using var connection = this.createSqliteConnection.Execute();
-            connection.Open();
+            var connection = this.createSqliteConnection.Execute();
 
             string createTableSql = "INSERT INTO VsCodePaths ( Path ) VALUES ( '...' )";
             using var command = new SQLiteCommand(createTableSql, connection);
@@ -452,8 +434,7 @@ namespace Infrastructure.Database
             var isVersionExists = this.checkVersionIfExists.Execute(version);
             if (!isVersionExists)
             {
-                using var connection = this.createSqliteConnection.Execute();
-                connection.Open();
+                var connection = this.createSqliteConnection.Execute();
 
                 string createTableSql =
                     "CREATE TABLE VsCodePaths (Id INTEGER PRIMARY KEY AUTOINCREMENT,Path TEXT)";
@@ -469,8 +450,7 @@ namespace Infrastructure.Database
             var isVersionExists = this.checkVersionIfExists.Execute(version);
             if (!isVersionExists)
             {
-                using var connection = this.createSqliteConnection.Execute();
-                connection.Open();
+                var connection = this.createSqliteConnection.Execute();
 
                 string createTableSql =
                     "CREATE TABLE ProjectPaths (Id INTEGER PRIMARY KEY AUTOINCREMENT,Path TEXT)";

@@ -11,7 +11,7 @@ public class GetGitCurrentBranchTests
     public void HandleAsync_GetOneDevApp_Success()
     {
         // Arrange
-        var stubService = new Mock<IGitService>();
+        var stubService = new Mock<IGitRepository>();
 
         stubService.Setup(x => x.GetCurrentBranch(It.IsAny<string>())).Returns("Branch");
 

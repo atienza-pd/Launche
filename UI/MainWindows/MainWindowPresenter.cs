@@ -1,9 +1,9 @@
-using System.Windows;
 using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Git;
 using ApplicationCore.Features.Groups;
 using ApplicationCore.Features.Projects;
 using Infrastructure.ViewModels;
+using System.Windows;
 using UI.Windows.Group;
 
 namespace UI.MainWindows;
@@ -107,7 +107,7 @@ public class MainWindowPresenter
 
     private async void Presenter_SaveProjectEvent(object? sender, EventArgs e)
     {
-        if (this.view.MainWindowViewModel!.SelectedProjectPath?.Id == 0)
+        if (this.view.MainWindowViewModel!.SelectedProjectPath?.Id == 0 || this.view.MainWindowViewModel!.SelectedProjectPath?.Id is null)
         {
             var addResult = await this.view.AddProjectService.HandleAsync(
                 new(

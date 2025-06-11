@@ -24,7 +24,7 @@ namespace ApplicationCore.Features.Projects
     {
         private readonly IProjectRepository projectRepository;
         private readonly IDevAppRepository devAppRepository;
-        private readonly IGitService gitService;
+        private readonly IGitRepository gitService;
         private readonly INotificationMessageService notificationMessageService;
         private readonly IGroupRepository groupRepository;
         private readonly IAddProjectService _addProjectServiceInstance;
@@ -32,7 +32,7 @@ namespace ApplicationCore.Features.Projects
         public ProjectFeaturesCreator(
             IProjectRepository projectRepository,
             IDevAppRepository devAppRepository,
-            IGitService gitService,
+            IGitRepository gitService,
             INotificationMessageService notificationMessageService,
             IGroupRepository groupRepository
         )

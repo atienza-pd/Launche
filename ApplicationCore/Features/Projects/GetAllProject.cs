@@ -20,13 +20,13 @@ public interface IGetAllProjectService
 public class GetAllProjectService(
     IProjectRepository projectRepository,
     IDevAppRepository devAppRepository,
-    IGitService gitService,
+    IGitRepository gitService,
     IGroupRepository groupRepository
 ) : IGetAllProjectService
 {
     private readonly IProjectRepository projectRepository = projectRepository;
     private readonly IDevAppRepository devAppRepository = devAppRepository;
-    private readonly IGitService gitService = gitService;
+    private readonly IGitRepository gitService = gitService;
     private readonly IGroupRepository groupRepository = groupRepository;
 
     public async Task<GetAllProjectViewModel> HandleAsync()
@@ -52,7 +52,7 @@ public class GetAllProjectService(
                         Index = position,
                         EnableMoveUp = position != 1,
                         EnableMoveDown = position != projects.Count(),
-                        EnableAddToGroup = true,
+                        EnableAddToGroup = false,
                         GroupName = groups.FirstOrDefault(group => group.Id == value.GroupId)?.Name,
                         DevAppPath = devApps.First(devApp => devApp.Id == value.IDEPathId).Path,
                         CurrentGitBranch =

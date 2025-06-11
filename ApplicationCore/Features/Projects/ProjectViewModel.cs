@@ -12,7 +12,7 @@
         public int Index { get; init; }
         public bool EnableMoveUp { get; init; }
         public bool EnableMoveDown { get; init; }
-        public bool EnableAddToGroup { get; init; } = true;
+        public bool EnableAddToGroup { get; init; } = false;
         public bool EnabledGroupReset
         {
             get { return GroupId is not null; }
