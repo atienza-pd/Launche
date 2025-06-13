@@ -13,19 +13,34 @@
     d:DataContext="{d:DesignInstance Type=devapps:DevAppsWindowViewModel}"
     Loaded="Window_Loaded"
     mc:Ignorable="d">
-    <Grid Margin="10,0,10,0">
+    <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="26px" />
+            <RowDefinition Height="24px" />
             <RowDefinition Height="26px" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="Dev App Path" />
+            <Label Grid.ColumnSpan="3" Content="Dev App Path" />
+            <Button
+                Grid.Column="4"
+                Margin="5,0,0,0"
+                Command="{Binding AddNewCommand}"
+                Content="Add New">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="3" />
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Grid>
-        <Grid Grid.Row="1" Margin="0,0,0,0">
+        <Grid Grid.Row="1" Margin="0,3,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -33,12 +48,11 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-
             <Grid Grid.Column="0" Grid.ColumnSpan="4">
                 <TextBox
                     Padding="3,3,20,3"
                     VerticalAlignment="Center"
-                    Text="{Binding Path}" />
+                    Text="{Binding DevApp.Path}" />
                 <Button
                     Width="20"
                     Height="20"
@@ -52,7 +66,7 @@
             <Button
                 Grid.Column="4"
                 Margin="5,0,0,0"
-                Click="btnSave_Click"
+                Command="{Binding SaveCommand}"
                 Content="Save">
                 <Button.Resources>
                     <Style TargetType="Border">
@@ -61,18 +75,19 @@
                 </Button.Resources>
             </Button>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Margin="0,3,0,0">
             <DataGrid
                 x:Name="DataGridItems"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 HeadersVisibility="Column"
-                ItemsSource="{Binding DevApps}">
+                ItemsSource="{Binding DevApps}"
+                SelectedItem="{Binding DevApp}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" Header="Dev Apps">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Label Content="{Binding Path}" />
+                                <Label Padding="3,3,0,0" Content="{Binding Path}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellStyle>

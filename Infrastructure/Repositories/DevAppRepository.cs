@@ -50,7 +50,16 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> Edit(DevApp param)
         {
-            return await Task.FromResult(true);
+            var tableName = $"IdePaths";
+            var connection = createSqliteConnection.Execute();
+
+            string createTableSql = $"UPDATE {tableName} SET  Path=@path WHERE Id = @id;";
+            using var command = new SQLiteCommand(createTableSql, connection);
+            command.Parameters.AddWithValue("@path", param.Path);
+            command.Parameters.AddWithValue("@id", param.Id);
+            var rows = await command.ExecuteNonQueryAsync();
+
+            return rows != 0;
         }
 
         public async Task<IEnumerable<DevApp>> GetAll()

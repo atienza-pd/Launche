@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Features.DevApps;
+﻿using ApplicationCore.Common;
+using ApplicationCore.Features.DevApps;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -18,20 +19,21 @@ public class ViewModelBase : INotifyPropertyChanged
 public class DevAppsWindowViewModel : ViewModelBase
 {
     public ICommand DeleteCommand { get; }
-    private string _path = "";
-    private ObservableCollection<IDEPathViewModel> devApps = [];
+    public ICommand SaveCommand { get; }
+    public ICommand AddNewCommand { get; }
+
+    private DevAppViewModel? _devApp = new();
+
+    private ObservableCollection<DevAppViewModel> devApps = [];
     private readonly IAddDevAppService devAppService;
     private readonly IEditDevAppService editDevAppService;
     private readonly IDeleteDevAppService deleteDevAppService;
     private readonly IGetAllDevAppService getAllDevAppService;
+    private readonly IAddDevAppService addDevAppService;
     private readonly IGetOneDevAppService getOneDevAppService;
+    private readonly INotificationMessageService notificationMessageService;
 
-    public async Task LoadDevAppsAsync()
-    {
-        var getAllDevAppServiceQuery = await getAllDevAppService.HandleAsync();
-        DevApps = [.. getAllDevAppServiceQuery.DevApps];
-    }
-    public ObservableCollection<IDEPathViewModel> DevApps
+    public ObservableCollection<DevAppViewModel> DevApps
     {
         get { return devApps; }
         set
@@ -41,37 +43,108 @@ public class DevAppsWindowViewModel : ViewModelBase
         }
     }
 
+    public DevAppViewModel? DevApp
+    {
+        get { return _devApp; }
+        set
+        {
+            _devApp = value;
+
+            OnPropertyChanged(nameof(this.DevApp));
+        }
+    }
+
+
     public DevAppsWindowViewModel(IAddDevAppService devAppService,
         IEditDevAppService editDevAppService,
         IDeleteDevAppService deleteDevAppService,
         IGetAllDevAppService getAllDevAppService,
-        IGetOneDevAppService getOneDevAppService
+        IAddDevAppService addDevAppService,
+        IGetOneDevAppService getOneDevAppService,
+        INotificationMessageService notificationMessageService
     )
     {
-        DeleteCommand = new RelayCommand<IDEPathViewModel>(DeleteItem);
+        DeleteCommand = new RelayCommand(param => DeleteItem((DevAppViewModel)param!));
+        SaveCommand = new RelayCommand(SaveDevAppsAsync);
+        AddNewCommand = new RelayCommand(AddNew);
+
         this.devAppService = devAppService;
         this.editDevAppService = editDevAppService;
         this.deleteDevAppService = deleteDevAppService;
         this.getAllDevAppService = getAllDevAppService;
+        this.addDevAppService = addDevAppService;
         this.getOneDevAppService = getOneDevAppService;
+        this.notificationMessageService = notificationMessageService;
     }
 
-    public string Path
+    private void AddNew()
     {
-        get { return _path; }
-        set
-        {
-            _path = value;
+        this.DevApp = null;
 
-            OnPropertyChanged(nameof(this.Path));
-        }
     }
 
-    private void DeleteItem(IDEPathViewModel item)
+    public async Task LoadDevAppsAsync()
+    {
+        var getAllDevAppServiceQuery = await getAllDevAppService.HandleAsync();
+
+        DevApps = [.. getAllDevAppServiceQuery.DevApps];
+    }
+
+    private async void SaveDevAppsAsync()
+    {
+        if (DevApp == null)
+        {
+            this.notificationMessageService.Create("Invalid Dev App data.",
+                "Save Dev App",
+                NotificationType.Error);
+
+            return;
+        }
+
+        if (String.IsNullOrEmpty(DevApp.Path) || String.IsNullOrWhiteSpace(DevApp.Path))
+        {
+            this.notificationMessageService.Create("Path is required!",
+                "Save Dev App",
+                NotificationType.Error);
+
+            return;
+        }
+
+
+        if (this.DevApp.Id == 0)
+        {
+            await this.addDevAppService.HandleAsync(new AddDevAppCommand
+            {
+                Path = this.DevApp.Path
+            });
+        }
+        else
+        {
+            await this.editDevAppService.HandleAsync(new EditDevAppCommand
+            {
+                Path = this.DevApp.Path,
+                Id = this.DevApp.Id
+            });
+        }
+
+        await this.LoadDevAppsAsync();
+
+    }
+
+    private async void DeleteItem(DevAppViewModel item)
     {
         if (item != null)
         {
-            DevApps.Remove(item);
+
+            var result = await this.deleteDevAppService.HandleAsync(new DeleteDevAppCommand
+            {
+                Id = item.Id
+            });
+
+            if (result)
+            {
+                DevApps.Remove(item);
+            }
         }
     }
 

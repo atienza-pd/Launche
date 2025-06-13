@@ -4,7 +4,7 @@ namespace ApplicationCore.Features.DevApps
 {
     public class GetAllDevAppViewModel
     {
-        public IEnumerable<IDEPathViewModel> DevApps { get; init; } = [];
+        public IEnumerable<DevAppViewModel> DevApps { get; init; } = [];
     }
 
     public interface IGetAllDevAppService
@@ -19,7 +19,7 @@ namespace ApplicationCore.Features.DevApps
             var devApps = await devAppRepository.GetAll();
             return new()
             {
-                DevApps = devApps.Select(devApp => new IDEPathViewModel
+                DevApps = devApps.Select(devApp => new DevAppViewModel
                 {
                     Id = devApp.Id,
                     Path = devApp.Path,
