@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using ApplicationCore.Features.DevApps;
+﻿using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Projects;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Infrastructure.ViewModels
 {
@@ -48,9 +48,9 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        private ObservableCollection<IDEPathViewModel>? idePathsModels;
+        private ObservableCollection<DevAppViewModel>? idePathsModels;
 
-        public ObservableCollection<IDEPathViewModel>? IdePathsModels
+        public ObservableCollection<DevAppViewModel>? IdePathsModels
         {
             get { return idePathsModels; }
             set
@@ -78,9 +78,9 @@ namespace Infrastructure.ViewModels
             }
         }
 
-        private IDEPathViewModel? selectedIdePath;
+        private DevAppViewModel? selectedIdePath;
 
-        public IDEPathViewModel? SelectedIdePath
+        public DevAppViewModel? SelectedIdePath
         {
             get { return selectedIdePath; }
             set
