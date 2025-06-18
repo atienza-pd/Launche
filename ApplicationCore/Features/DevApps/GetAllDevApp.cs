@@ -23,6 +23,7 @@ namespace ApplicationCore.Features.DevApps
                 {
                     Id = devApp.Id,
                     Path = devApp.Path,
+                    Name = devApp.Name
                 }),
             };
         }

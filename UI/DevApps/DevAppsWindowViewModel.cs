@@ -1,7 +1,9 @@
 ﻿using ApplicationCore.Common;
 using ApplicationCore.Features.DevApps;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace UI.DevApps;
@@ -21,17 +23,7 @@ public class DevAppsWindowViewModel : ViewModelBase
     public ICommand DeleteCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand AddNewCommand { get; }
-
-    private DevAppViewModel? _devApp = new();
-
-    private ObservableCollection<DevAppViewModel> devApps = [];
-    private readonly IAddDevAppService devAppService;
-    private readonly IEditDevAppService editDevAppService;
-    private readonly IDeleteDevAppService deleteDevAppService;
-    private readonly IGetAllDevAppService getAllDevAppService;
-    private readonly IAddDevAppService addDevAppService;
-    private readonly IGetOneDevAppService getOneDevAppService;
-    private readonly INotificationMessageService notificationMessageService;
+    public ICommand OpenDialogCommand { get; }
 
     public ObservableCollection<DevAppViewModel> DevApps
     {
@@ -54,6 +46,43 @@ public class DevAppsWindowViewModel : ViewModelBase
         }
     }
 
+    private string _search;
+
+    public string Search
+    {
+        get { return _search; }
+        set
+        {
+            _search = value;
+            OnPropertyChanged(nameof(this.Search));
+            SearchDevApps(_search);
+        }
+    }
+
+    private Visibility visibility = Visibility.Hidden;
+
+    public Visibility Visibility
+    {
+        get { return visibility; }
+        set
+        {
+            visibility = value;
+            OnPropertyChanged(nameof(this.visibility));
+        }
+    }
+
+
+    private DevAppViewModel? _devApp = new();
+
+    private ObservableCollection<DevAppViewModel> devApps = [];
+    private readonly IAddDevAppService devAppService;
+    private readonly IEditDevAppService editDevAppService;
+    private readonly IDeleteDevAppService deleteDevAppService;
+    private readonly IGetAllDevAppService getAllDevAppService;
+    private readonly IAddDevAppService addDevAppService;
+    private readonly IGetOneDevAppService getOneDevAppService;
+    private readonly INotificationMessageService notificationMessageService;
+
 
     public DevAppsWindowViewModel(IAddDevAppService devAppService,
         IEditDevAppService editDevAppService,
@@ -67,6 +96,7 @@ public class DevAppsWindowViewModel : ViewModelBase
         DeleteCommand = new RelayCommand(param => DeleteItem((DevAppViewModel)param!));
         SaveCommand = new RelayCommand(SaveDevAppsAsync);
         AddNewCommand = new RelayCommand(AddNew);
+        OpenDialogCommand = new RelayCommand(OpenDialog);
 
         this.devAppService = devAppService;
         this.editDevAppService = editDevAppService;
@@ -77,10 +107,28 @@ public class DevAppsWindowViewModel : ViewModelBase
         this.notificationMessageService = notificationMessageService;
     }
 
+    private async void SearchDevApps(string search)
+    {
+        var result = await getAllDevAppService.HandleAsync();
+        this.DevApps = [.. result.DevApps.Where(x => x.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
+    }
+
+    private void OpenDialog()
+    {
+        var openFolderDialog = new OpenFileDialog { Filter = "Executable Files | *.exe" };
+        var result = openFolderDialog.ShowDialog() ?? false;
+
+        if (!result)
+        {
+            return;
+        }
+
+        DevApp = new() { Id = DevApp?.Id ?? 0, Path = openFolderDialog.FileName, Name = DevApp?.Name! };
+    }
+
     private void AddNew()
     {
-        this.DevApp = null;
-
+        this.DevApp = new();
     }
 
     public async Task LoadDevAppsAsync()
@@ -110,25 +158,38 @@ public class DevAppsWindowViewModel : ViewModelBase
             return;
         }
 
-
         if (this.DevApp.Id == 0)
         {
             await this.addDevAppService.HandleAsync(new AddDevAppCommand
             {
+                Name = this.DevApp.Name,
                 Path = this.DevApp.Path
             });
+
+            Visibility = Visibility.Visible;
         }
         else
         {
             await this.editDevAppService.HandleAsync(new EditDevAppCommand
             {
+                Name = this.DevApp.Name,
                 Path = this.DevApp.Path,
                 Id = this.DevApp.Id
             });
+
+            Visibility = Visibility.Visible;
         }
 
-        await this.LoadDevAppsAsync();
 
+        int id = this.DevApp.Id;
+
+        var result = await getAllDevAppService.HandleAsync();
+        this.DevApps = [.. result.DevApps.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
+
+        this.DevApp = DevApps.FirstOrDefault(x => x.Id == id) ?? new();
+
+        await Task.Delay(3000);
+        Visibility = Visibility.Hidden;
     }
 
     private async void DeleteItem(DevAppViewModel item)
@@ -144,6 +205,7 @@ public class DevAppsWindowViewModel : ViewModelBase
             if (result)
             {
                 DevApps.Remove(item);
+                DevApp = new();
             }
         }
     }

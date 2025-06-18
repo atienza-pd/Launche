@@ -18,7 +18,7 @@ namespace ApplicationCore.Features.DevApps
         {
             var devApp = await devAppRepository.GetById(query.Id);
 
-            return new() { Id = devApp.Id, Path = devApp.Path };
+            return new() { Id = devApp.Id, Path = devApp.Path, Name = devApp.Name };
         }
     }
 }
