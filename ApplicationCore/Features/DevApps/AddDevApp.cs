@@ -6,6 +6,7 @@ namespace ApplicationCore.Features.DevApps;
 public class AddDevAppCommand
 {
     public required string Path { get; set; } = string.Empty;
+    public string Name { get; set; }
 }
 
 public interface IAddDevAppService
@@ -24,15 +25,6 @@ public class AddDevAppService(
 
     public async Task<bool> HandleAsync(AddDevAppCommand command)
     {
-        var result = await devAppRepository.Add(new() { Path = command.Path });
-        if (result)
-        {
-            notificationMessageService.Create(
-                "New Dev App was save!",
-                "Add Dev App",
-                NotificationType.Success
-            );
-        }
-        return result;
+        return await devAppRepository.Add(new() { Path = command.Path, Name = command.Name });
     }
 }

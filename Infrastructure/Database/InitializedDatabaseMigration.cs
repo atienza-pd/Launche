@@ -47,6 +47,24 @@ namespace Infrastructure.Database
             await this.RenameGroupTableToGroups(19);
             await this.AddForeignKeyReferenceToGroupIdInProjectPaths(20);
             await this.RenameProjectPathsTable(21);
+            await this.AddNameToIDEPathTable(22);
+        }
+
+        private async Task AddNameToIDEPathTable(int version)
+        {
+            var isVersionExists = this.checkVersionIfExists.Execute(version);
+            if (isVersionExists)
+            {
+                return;
+            }
+
+            var connection = this.createSqliteConnection.Execute();
+
+            string query = "ALTER TABLE IDEPaths ADD Name TEXT(50);\r\n";
+            using var command = new SQLiteCommand(query, connection);
+            await command.ExecuteNonQueryAsync();
+
+            this.addTableSchemaVersion.Execute(version);
         }
 
         private async Task RenameProjectPathsTable(int version)

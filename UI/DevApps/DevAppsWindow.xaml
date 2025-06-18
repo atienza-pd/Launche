@@ -8,29 +8,95 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:UI.Windows.Group.ViewModels;assembly=ApplicationCore"
     Title="Add Development Apps"
-    Width="400"
+    Width="600"
     Height="400"
     d:DataContext="{d:DesignInstance Type=devapps:DevAppsWindowViewModel}"
     Loaded="Window_Loaded"
     mc:Ignorable="d">
-    <Grid Margin="10,0,10,10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="24px" />
-            <RowDefinition Height="26px" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="3" Content="Dev App Path" />
+
+    <Grid Margin="10,10,10,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Content="Search" />
+            <Grid Grid.Row="1" VerticalAlignment="Top">
+
+                <TextBox
+                    Padding="3,3,20,3"
+                    VerticalAlignment="Center"
+                    Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Height="20"
+                    Margin="0,0,2,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderBrush="Gray"
+                    Content="Search" />
+            </Grid>
+            <Grid Grid.Row="2">
+                <ListView
+                    ItemsSource="{Binding DevApps, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding DevApp, UpdateSourceTrigger=PropertyChanged}"
+                    SizeChanged="ListView_SizeChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Name">
+                                <GridViewColumn.HeaderContainerStyle>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                    </Style>
+                                </GridViewColumn.HeaderContainerStyle>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button
+                                            HorizontalAlignment="Center"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}">
+                                            <Button.Content>
+                                                <Image
+                                                    Grid.Row="7"
+                                                    Width="16"
+                                                    Height="16"
+                                                    Source="/Resources/trash-can-alt-1-red.png" />
+                                            </Button.Content>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="1" Margin="10,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="28px" />
+                <RowDefinition Height="28px" />
+                <RowDefinition Height="28px" />
+                <RowDefinition Height="28px" />
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="34px" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
             <Button
+                Grid.Row="0"
                 Grid.Column="4"
-                Margin="5,0,0,0"
+                Width="60"
+                HorizontalAlignment="Right"
                 Command="{Binding AddNewCommand}"
                 Content="Add New">
                 <Button.Resources>
@@ -39,33 +105,42 @@
                     </Style>
                 </Button.Resources>
             </Button>
-        </Grid>
-        <Grid Grid.Row="1" Margin="0,3,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Grid.ColumnSpan="4">
-                <TextBox
-                    Padding="3,3,20,3"
-                    VerticalAlignment="Center"
-                    Text="{Binding DevApp.Path}" />
-                <Button
-                    Width="20"
-                    Height="20"
-                    Margin="0,0,2,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    BorderBrush="Gray"
-                    Click="VsCodePathOpenDialogButton_Click"
-                    Content="..." />
+            <Label
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Content="Name" />
+            <Grid Grid.Row="2" Margin="0,0,0,3">
+                <Grid Grid.Column="0">
+                    <TextBox
+                        Padding="3,3,3,3"
+                        VerticalAlignment="Center"
+                        Text="{Binding DevApp.Name}" />
+                </Grid>
+            </Grid>
+            <Label
+                Grid.Row="3"
+                Grid.ColumnSpan="3"
+                Content="Path" />
+            <Grid Grid.Row="4" Margin="0,0,0,3">
+                <Grid Grid.Column="0">
+                    <TextBox
+                        Padding="3,3,20,3"
+                        VerticalAlignment="Center"
+                        Text="{Binding DevApp.Path}" />
+                    <Button
+                        Width="20"
+                        Height="20"
+                        Margin="0,0,2,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        BorderBrush="Gray"
+                        Command="{Binding OpenDialogCommand}"
+                        Content="..." />
+                </Grid>
             </Grid>
             <Button
-                Grid.Column="4"
-                Margin="5,0,0,0"
+                Grid.Row="5"
+                Margin="0,5,0,0"
                 Command="{Binding SaveCommand}"
                 Content="Save">
                 <Button.Resources>
@@ -74,47 +149,13 @@
                     </Style>
                 </Button.Resources>
             </Button>
-        </Grid>
-        <Grid Grid.Row="2" Margin="0,3,0,0">
-            <DataGrid
-                x:Name="DataGridItems"
-                AutoGenerateColumns="False"
-                CanUserAddRows="False"
-                HeadersVisibility="Column"
-                ItemsSource="{Binding DevApps}"
-                SelectedItem="{Binding DevApp}">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="*" Header="Dev Apps">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Label Padding="3,3,0,0" Content="{Binding Path}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                        <DataGridTemplateColumn.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="LightBlue" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridTemplateColumn.CellStyle>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Actions">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button
-                                    Width="60"
-                                    Height="25"
-                                    BorderThickness="0"
-                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Delete" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Label
+                Grid.Row="6"
+                VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Center"
+                Background="LightGreen"
+                Content="Saved!"
+                Visibility="{Binding Visibility}" />
         </Grid>
     </Grid>
 </Window>

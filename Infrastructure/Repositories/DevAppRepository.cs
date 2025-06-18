@@ -23,9 +23,10 @@ namespace Infrastructure.Repositories
             var tableName = $"IdePaths";
             var connection = createSqliteConnection.Execute();
 
-            string createTableSql = $"INSERT INTO IdePaths ( Path ) VALUES ( @path );";
+            string createTableSql = $"INSERT INTO IdePaths ( Name, Path ) VALUES ( @name, @path );";
             using var command = new SQLiteCommand(createTableSql, connection);
             command.Parameters.AddWithValue("@path", param.Path);
+            command.Parameters.AddWithValue("@name", param.Name);
             var rows = await command.ExecuteNonQueryAsync();
 
             return rows != 0;
@@ -53,9 +54,10 @@ namespace Infrastructure.Repositories
             var tableName = $"IdePaths";
             var connection = createSqliteConnection.Execute();
 
-            string createTableSql = $"UPDATE {tableName} SET  Path=@path WHERE Id = @id;";
+            string createTableSql = $"UPDATE {tableName} SET Name = @name,  Path=@path WHERE Id = @id;";
             using var command = new SQLiteCommand(createTableSql, connection);
             command.Parameters.AddWithValue("@path", param.Path);
+            command.Parameters.AddWithValue("@name", param.Name);
             command.Parameters.AddWithValue("@id", param.Id);
             var rows = await command.ExecuteNonQueryAsync();
 
@@ -75,8 +77,9 @@ namespace Infrastructure.Repositories
             {
                 _ = int.TryParse(reader[nameof(DevApp.Id)]?.ToString(), out int id);
                 var path = reader[nameof(DevApp.Path)]?.ToString() ?? "";
+                var name = reader[nameof(DevApp.Name)]?.ToString() ?? "";
 
-                iDEPaths.Add(new() { Id = id, Path = path });
+                iDEPaths.Add(new() { Id = id, Path = path, Name = name });
             }
 
             return iDEPaths;
@@ -93,10 +96,12 @@ namespace Infrastructure.Repositories
             using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {
-                var path = reader[nameof(Infrastructure.Models.DevApp.Path)]?.ToString() ?? "";
+                var path = reader[nameof(DevApp.Path)]?.ToString() ?? "";
+                var name = reader[nameof(DevApp.Name)]?.ToString() ?? "";
 
                 vsCodePath.Id = id;
                 vsCodePath.Path = path;
+                vsCodePath.Name = name;
             }
 
             return vsCodePath;
