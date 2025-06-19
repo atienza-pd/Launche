@@ -283,7 +283,7 @@ public class MainWindowPresenter
     private async void Presenter_AddNewDevAppEvent(object? sender, EventArgs e)
     {
         var resultSave = await this.view.AddDevAppService!.HandleAsync(
-            new() { Path = this.view.DevAppFilePath }
+            new() { Path = this.view.DevAppFilePath, Name = "" }
         );
 
         if (resultSave)

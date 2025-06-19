@@ -10,11 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\folder.png" />
+    <None Remove="Resources\search.png" />
     <None Remove="Resources\trash-can-alt-1-red.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="app.ico" />
+    <Resource Include="Resources\folder.png" />
+    <Resource Include="Resources\search.png" />
     <Resource Include="Resources\trash-can-alt-1-red.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
