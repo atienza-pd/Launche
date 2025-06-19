@@ -128,6 +128,7 @@ public class DevAppsWindowViewModel : ViewModelBase
 
     private void AddNew()
     {
+        SearchDevApps("");
         this.DevApp = new();
     }
 
@@ -140,56 +141,75 @@ public class DevAppsWindowViewModel : ViewModelBase
 
     private async void SaveDevAppsAsync()
     {
-        if (DevApp == null)
+        try
         {
-            this.notificationMessageService.Create("Invalid Dev App data.",
-                "Save Dev App",
-                NotificationType.Error);
-
-            return;
-        }
-
-        if (String.IsNullOrEmpty(DevApp.Path) || String.IsNullOrWhiteSpace(DevApp.Path))
-        {
-            this.notificationMessageService.Create("Path is required!",
-                "Save Dev App",
-                NotificationType.Error);
-
-            return;
-        }
-
-        if (this.DevApp.Id == 0)
-        {
-            await this.addDevAppService.HandleAsync(new AddDevAppCommand
+            if (DevApp == null)
             {
-                Name = this.DevApp.Name,
-                Path = this.DevApp.Path
-            });
+                this.notificationMessageService.Create("Invalid Dev App data.",
+                    "Save Dev App",
+                    NotificationType.Error);
 
-            Visibility = Visibility.Visible;
-        }
-        else
-        {
-            await this.editDevAppService.HandleAsync(new EditDevAppCommand
+                return;
+            }
+
+            if (String.IsNullOrEmpty(DevApp.Name) || String.IsNullOrWhiteSpace(DevApp.Name))
             {
-                Name = this.DevApp.Name,
-                Path = this.DevApp.Path,
-                Id = this.DevApp.Id
-            });
+                this.notificationMessageService.Create("Name is required!",
+                    "Save Dev App",
+                    NotificationType.Error);
 
-            Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (String.IsNullOrEmpty(DevApp.Path) || String.IsNullOrWhiteSpace(DevApp.Path))
+            {
+                this.notificationMessageService.Create("Path is required!",
+                    "Save Dev App",
+                    NotificationType.Error);
+
+                return;
+            }
+
+            if (this.DevApp.Id == 0)
+            {
+                await this.addDevAppService.HandleAsync(new AddDevAppCommand
+                {
+                    Name = this.DevApp.Name,
+                    Path = this.DevApp.Path
+                });
+
+                Visibility = Visibility.Visible;
+            }
+            else
+            {
+                await this.editDevAppService.HandleAsync(new EditDevAppCommand
+                {
+                    Name = this.DevApp.Name,
+                    Path = this.DevApp.Path,
+                    Id = this.DevApp.Id
+                });
+
+                Visibility = Visibility.Visible;
+            }
+
+
+            int id = this.DevApp.Id;
+
+            var result = await getAllDevAppService.HandleAsync();
+            this.DevApps = [.. result.DevApps.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
+
+            this.DevApp = DevApps.FirstOrDefault(x => x.Id == id) ?? new();
+
+            await Task.Delay(3000);
+            Visibility = Visibility.Hidden;
+
         }
-
-
-        int id = this.DevApp.Id;
-
-        var result = await getAllDevAppService.HandleAsync();
-        this.DevApps = [.. result.DevApps.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
-
-        this.DevApp = DevApps.FirstOrDefault(x => x.Id == id) ?? new();
-
-        await Task.Delay(3000);
-        Visibility = Visibility.Hidden;
+        catch (Exception ex)
+        {
+            this.notificationMessageService.Create(ex.Message,
+                    "Save Dev App",
+                    NotificationType.Error);
+        }
     }
 
     private async void DeleteItem(DevAppViewModel item)
