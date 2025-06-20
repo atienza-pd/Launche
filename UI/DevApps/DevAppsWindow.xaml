@@ -14,7 +14,6 @@
     Loaded="Window_Loaded"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-
     <Grid Margin="10,10,10,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -70,7 +69,8 @@
                                                     Grid.Row="7"
                                                     Width="16"
                                                     Height="16"
-                                                    Source="/Resources/trash-can-alt-1-red.png" />
+                                                    Source="/Resources/trash-can-alt-1-red.png"
+                                                    ToolTip="Delete" />
                                             </Button.Content>
                                         </Button>
                                     </DataTemplate>
@@ -136,7 +136,10 @@
                         BorderBrush="Transparent"
                         Command="{Binding OpenDialogCommand}">
                         <Button.Content>
-                            <Image HorizontalAlignment="Right" Source="/Resources/folder.png" />
+                            <Image
+                                HorizontalAlignment="Right"
+                                Source="/Resources/folder.png"
+                                ToolTip="Select Executable File" />
                         </Button.Content>
                     </Button>
 

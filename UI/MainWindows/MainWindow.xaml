@@ -13,7 +13,6 @@
     WindowStyle="SingleBorderWindow"
     mc:Ignorable="d">
     <Grid Margin="5,2,5,0">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="26" />
             <RowDefinition Height="33" />
@@ -51,24 +50,35 @@
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ComboBox
                 x:Name="comboIDEPaths"
                 Grid.Column="0"
-                Grid.ColumnSpan="5"
                 Height="23"
+                Margin="0,0,3,0"
+                VerticalAlignment="Center"
                 DisplayMemberPath="Name"
-                Focusable="False"
+                Focusable="True"
                 IsEditable="True"
-                IsReadOnly="True"
                 ItemsSource="{Binding IdePathsModels, UpdateSourceTrigger=PropertyChanged}"
                 SelectedValue="{Binding SelectedIdePath, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Grid.Column="1"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Command="{Binding RefreshDevAppsCommand}"
+                ToolTip="Refresh">
+                <Button.Content>
+                    <Image
+                        Width="16"
+                        Height="16"
+                        Margin="0,0,0,0"
+                        HorizontalAlignment="Center"
+                        Source="/Resources/reload.png" />
+                </Button.Content>
+            </Button>
         </Grid>
         <Grid
             Grid.Row="3"

@@ -59,6 +59,7 @@ namespace UI
                 .AddSingleton<MainWindow>()
                 .AddTransient<DevAppsWindow>()
                 .AddTransient<DevAppsWindowViewModel>()
+                .AddSingleton<IDevAppsSubscriptionService, DevAppsSubscriptionService>()
                 .BuildServiceProvider();
         }
     }

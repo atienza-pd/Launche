@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using UI.DevApps;
 using UI.Windows.Group;
 
 namespace UI.MainWindows;
@@ -41,6 +42,7 @@ public partial class MainWindow : Window, IMainWindowView
     private GroupModalWindow? groupModalWindow;
     private readonly List<Group> groups = [];
     private readonly IServiceProvider serviceProvider;
+    private readonly IDevAppsSubscriptionService devAppsSubscriptionService;
 
     public string DevAppFilePath { get; set; } = "";
 
@@ -107,7 +109,8 @@ public partial class MainWindow : Window, IMainWindowView
         IProjectFeaturesCreator projectFeaturesCreator,
         IGitFeaturesCreator gitFeaturesCreator,
         IGroupFeaturesCreator groupFeaturesCreator,
-        IServiceProvider serviceProvider
+        IServiceProvider serviceProvider,
+        IDevAppsSubscriptionService devAppsSubscriptionService
     )
     {
         #region Dev App Services
@@ -145,14 +148,22 @@ public partial class MainWindow : Window, IMainWindowView
         var presenter = new MainWindowPresenter(this);
         DataContext = MainWindowViewModel;
         this.serviceProvider = serviceProvider;
+        this.devAppsSubscriptionService = devAppsSubscriptionService;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+        this.devAppsSubscriptionService.Subscribe += DevAppsSubscriptionService_Subscribe;
         SearchProjectEvent.Invoke(this, EventArgs.Empty);
         FetchDevAppsEvent!.Invoke(this, EventArgs.Empty);
         NewProjectEvent.Invoke(this, EventArgs.Empty);
 
+    }
+
+    private void DevAppsSubscriptionService_Subscribe(object? sender, EventArgs e)
+    {
+        FetchDevAppsEvent!.Invoke(this, EventArgs.Empty);
+        this.ProjectPathsListView.SelectedItem = null;
     }
 
     public void FocusOnListViewWhenArrowDown()
@@ -310,6 +321,7 @@ public partial class MainWindow : Window, IMainWindowView
     {
 
         var mainWindow = serviceProvider.GetService<DevAppsWindow>();
+
         mainWindow.ShowDialog();
     }
 }
