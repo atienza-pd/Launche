@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using UI.DevApps;
 
@@ -18,24 +17,6 @@ public partial class DevAppsWindow : Window
 
         DataContext = devAppsWindowView;
         this.devAppsWindowView = devAppsWindowView;
-    }
-
-    private void VsCodePathOpenDialogButton_Click(object sender, RoutedEventArgs e)
-    {
-        var openFolderDialog = new OpenFileDialog { Filter = "Executable Files | *.exe" };
-        var result = openFolderDialog.ShowDialog() ?? false;
-
-        if (!result)
-        {
-            return;
-        }
-
-        devAppsWindowView.DevApp = new() { Id = devAppsWindowView.DevApp?.Id ?? 0, Path = openFolderDialog.FileName };
-    }
-
-    private void btnSave_Click(object sender, RoutedEventArgs e)
-    {
-
     }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)

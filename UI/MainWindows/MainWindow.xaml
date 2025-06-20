@@ -48,38 +48,18 @@
                 Content="Dev Apps"
                 Foreground="White" />
         </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <ComboBox
-                x:Name="comboIDEPaths"
-                Grid.Column="0"
-                Height="23"
-                Margin="0,0,3,0"
-                VerticalAlignment="Center"
-                DisplayMemberPath="Name"
-                Focusable="True"
-                IsEditable="True"
-                ItemsSource="{Binding IdePathsModels, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValue="{Binding SelectedIdePath, UpdateSourceTrigger=PropertyChanged}" />
-            <Button
-                Grid.Column="1"
-                Background="Transparent"
-                BorderBrush="Transparent"
-                Command="{Binding RefreshDevAppsCommand}"
-                ToolTip="Refresh">
-                <Button.Content>
-                    <Image
-                        Width="16"
-                        Height="16"
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        Source="/Resources/reload.png" />
-                </Button.Content>
-            </Button>
-        </Grid>
+        <ComboBox
+            x:Name="comboIDEPaths"
+            Grid.Row="2"
+            Grid.Column="0"
+            Height="23"
+            Margin="0,0,3,0"
+            VerticalAlignment="Center"
+            DisplayMemberPath="Name"
+            Focusable="True"
+            IsEditable="True"
+            ItemsSource="{Binding IdePathsModels, UpdateSourceTrigger=PropertyChanged}"
+            SelectedValue="{Binding SelectedIdePath, UpdateSourceTrigger=PropertyChanged}" />
         <Grid
             Grid.Row="3"
             Height="23"
