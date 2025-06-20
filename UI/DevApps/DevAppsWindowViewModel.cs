@@ -75,8 +75,7 @@ public class DevAppsWindowViewModel : ViewModelBase
 
     private DevAppViewModel? _devApp = new();
 
-    private ObservableCollection<DevAppViewModel> devApps = new ObservableCollection<DevAppViewModel>();
-    private readonly IAddDevAppService devAppService;
+    private ObservableCollection<DevAppViewModel> devApps = [];
     private readonly IEditDevAppService editDevAppService;
     private readonly IDeleteDevAppService deleteDevAppService;
     private readonly IGetAllDevAppService getAllDevAppService;
@@ -100,7 +99,6 @@ public class DevAppsWindowViewModel : ViewModelBase
         AddNewCommand = new RelayCommand(AddNew);
         OpenDialogCommand = new RelayCommand(OpenDialog);
 
-        this.devAppService = devAppService;
         this.editDevAppService = editDevAppService;
         this.deleteDevAppService = deleteDevAppService;
         this.getAllDevAppService = getAllDevAppService;

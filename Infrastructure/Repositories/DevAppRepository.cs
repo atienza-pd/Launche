@@ -20,7 +20,6 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> Add(DevApp param)
         {
-            var tableName = $"IdePaths";
             var connection = createSqliteConnection.Execute();
 
             string createTableSql = $"INSERT INTO IdePaths ( Name, Path ) VALUES ( @name, @path );";

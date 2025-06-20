@@ -60,7 +60,7 @@ namespace Infrastructure.Database
 
             var connection = this.createSqliteConnection.Execute();
 
-            string query = "ALTER TABLE IDEPaths ADD Name TEXT(50);\r\n";
+            string query = "ALTER TABLE IdePaths ADD Name TEXT(50);\r\n";
             using var command = new SQLiteCommand(query, connection);
             await command.ExecuteNonQueryAsync();
 
