@@ -68,7 +68,7 @@ public class DevAppsWindowViewModel : ViewModelBase
         set
         {
             visibility = value;
-            OnPropertyChanged(nameof(this.visibility));
+            OnPropertyChanged(nameof(this.Visibility));
         }
     }
 
