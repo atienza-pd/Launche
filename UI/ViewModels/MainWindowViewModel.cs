@@ -2,11 +2,18 @@
 using ApplicationCore.Features.Projects;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
+using UI.Shared;
 
 namespace Infrastructure.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+
+        public ICommand RefreshDevAppsCommand { get; }
+
+
         public MainWindowViewModel()
         {
             this.ProjectPathModels = [];
@@ -14,6 +21,12 @@ namespace Infrastructure.ViewModels
             this.SelectedProjectPath = null;
             this.SelectedIdePath = new();
             this.search = "";
+            this.RefreshDevAppsCommand = new RelayCommand(RefreshDevApps);
+        }
+
+        private void RefreshDevApps()
+        {
+            MessageBox.Show("Refresh");
         }
 
         private bool _enableAddNewProject = true;
