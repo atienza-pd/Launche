@@ -75,7 +75,7 @@ public class DevAppsWindowViewModel : ViewModelBase
 
     private DevAppViewModel? _devApp = new();
 
-    private ObservableCollection<DevAppViewModel> devApps = [];
+    private ObservableCollection<DevAppViewModel> devApps = new ObservableCollection<DevAppViewModel>();
     private readonly IAddDevAppService devAppService;
     private readonly IEditDevAppService editDevAppService;
     private readonly IDeleteDevAppService deleteDevAppService;
