@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using UI.DevApps;
+using UI.Features;
 using UI.Windows.Group;
 
 namespace UI.MainWindows;
@@ -319,8 +320,14 @@ public partial class MainWindow : Window, IMainWindowView
 
     private void MenuItem_ShowDevApps_Click(object sender, RoutedEventArgs e)
     {
-
         var mainWindow = serviceProvider.GetService<DevAppsWindow>();
+
+        mainWindow.ShowDialog();
+    }
+
+    private void MenuItemManageProjects_Click(object sender, RoutedEventArgs e)
+    {
+        var mainWindow = serviceProvider.GetService<ProjectsWindow>();
 
         mainWindow.ShowDialog();
     }

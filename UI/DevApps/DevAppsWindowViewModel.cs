@@ -2,22 +2,11 @@
 using ApplicationCore.Features.DevApps;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using UI.Shared;
 
 namespace UI.DevApps;
-
-public class ViewModelBase : INotifyPropertyChanged
-{
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-}
 
 public class DevAppsWindowViewModel : ViewModelBase
 {
