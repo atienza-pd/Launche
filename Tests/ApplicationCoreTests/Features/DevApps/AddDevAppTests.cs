@@ -24,7 +24,7 @@ public class AddDevAppTests
         );
 
         // Act
-        var actual = await sut.HandleAsync(new() { Path = "Path" });
+        var actual = await sut.HandleAsync(new() { Path = "Path", Name = "" });
 
         // Assert
         Assert.True(actual);

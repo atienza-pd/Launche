@@ -3,6 +3,8 @@ using ApplicationCore.Common;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using UI.DevApps;
+using UI.Features;
+using UI.Features.Projects;
 using UI.MainWindows;
 
 namespace UI
@@ -58,8 +60,11 @@ namespace UI
                 .AddApplicationCoreServiceCollection()
                 .AddSingleton<MainWindow>()
                 .AddTransient<DevAppsWindow>()
+                .AddTransient<ProjectsWindow>()
                 .AddTransient<DevAppsWindowViewModel>()
+                .AddTransient<ProjectsWindowViewModel>()
                 .AddSingleton<IDevAppsSubscriptionService, DevAppsSubscriptionService>()
+                .AddSingleton<IProjectWindowEventsService, ProjectWindowEventsService>()
                 .BuildServiceProvider();
         }
     }

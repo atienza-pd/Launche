@@ -30,6 +30,11 @@
                 Padding="6,3,6,6"
                 Click="MenuItem_ShowDevApps_Click"
                 Header="_Manage Dev Apps" />
+            <MenuItem
+                Name="MenuItemManageProjects"
+                Padding="6,3,6,6"
+                Click="MenuItemManageProjects_Click"
+                Header="_Manage Projects" />
         </Menu>
         <Grid
             Grid.Row="1"

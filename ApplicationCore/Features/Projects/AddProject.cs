@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Common;
+﻿using Infrastructure.Repositories;
 
 namespace ApplicationCore.Features.Projects
 {
-    public record AddProjectCommand(string Name, string Path, int IDEPathId, string FileName);
+    public record AddProjectCommand(string Name, string Path, int? IDEPathId, string FileName);
 
     public interface IAddProjectService
     {
@@ -11,69 +11,47 @@ namespace ApplicationCore.Features.Projects
 
     public class AddProjectService(
         IProjectRepository projectRepository,
-        INotificationMessageService notificationMessageService
+        IDevAppRepository devAppRepository
     ) : IAddProjectService
     {
         private readonly IProjectRepository projectRepository = projectRepository;
-        private readonly INotificationMessageService notificationMessageService =
-            notificationMessageService;
+        private readonly IDevAppRepository devAppRepository = devAppRepository;
 
         public async Task<bool> HandleAsync(AddProjectCommand command)
         {
-            if (command.Name is null || command.Name is "")
+            ArgumentNullException.ThrowIfNull(command);
+
+            int defaultDevAppId = command.IDEPathId ?? 0;
+
+            if (string.IsNullOrWhiteSpace(command.Name))
             {
-                notificationMessageService.Create(
-                    "Project Name must be provided",
-                    "Add Project",
-                    NotificationType.Error
-                );
-                return false;
+                throw new ApplicationException("Project Name must be provided");
             }
 
-            if (command.Path is null || command.Path is "")
+            if (string.IsNullOrWhiteSpace(command.Path))
             {
-                notificationMessageService.Create(
-                    "Project Path must be provided",
-                    "Add Project",
-                    NotificationType.Error
-                );
-                return false;
+                throw new ApplicationException("Project Path must be provided");
             }
 
-            if (command.IDEPathId is 0)
+            if (command.IDEPathId is null)
             {
-                notificationMessageService.Create(
-                    "Project Dev App must be provided",
-                    "Add Project",
-                    NotificationType.Error
-                );
-                return false;
+                var devApps = await devAppRepository.GetAll();
+                defaultDevAppId = devApps.First().Id;
             }
 
             var projects = await projectRepository.GetAll();
             var lastSortId = projects.LastOrDefault()?.SortId ?? 0;
-            var result = await this.projectRepository.Add(
+
+            return await this.projectRepository.Add(
                 new()
                 {
                     Name = command.Name,
                     Path = command.Path,
-                    IDEPathId = command.IDEPathId,
+                    IDEPathId = defaultDevAppId,
                     Filename = command.FileName,
                     SortId = lastSortId + 1,
                 }
             );
-            ;
-
-            if (result)
-            {
-                notificationMessageService.Create(
-                    "New Project has been save!",
-                    "Add Project",
-                    NotificationType.Information
-                );
-            }
-
-            return result;
         }
     }
 }

@@ -18,7 +18,10 @@ public static class CoreServiceCollection
             .AddSingleton<IDeleteDevAppService, DeleteDevAppService>()
             .AddSingleton<IGetAllDevAppService, GetAllDevAppService>()
             .AddSingleton<IGetOneDevAppService, GetOneDevAppService>()
-
+            .AddSingleton<IAddProjectService, AddProjectService>()
+            .AddSingleton<IEditProjectService, EditProjectService>()
+            .AddSingleton<IDeleteProjectService, DeleteProjectService>()
+            .AddSingleton<IGetAllProjectService, GetAllProjectService>()
             .AddSingleton<IGroupFeaturesCreator, GroupFeaturesCreator>()
             .AddSingleton<IDevAppFeaturesCreator, DevAppFeaturesCreator>()
             .AddSingleton<INotificationMessageService, NotificationMessageService>()
