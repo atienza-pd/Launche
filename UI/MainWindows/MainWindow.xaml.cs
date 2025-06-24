@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using UI.DevApps;
 using UI.Features;
+using UI.Features.Projects;
 using UI.Windows.Group;
 
 namespace UI.MainWindows;
@@ -44,6 +45,7 @@ public partial class MainWindow : Window, IMainWindowView
     private readonly List<Group> groups = [];
     private readonly IServiceProvider serviceProvider;
     private readonly IDevAppsSubscriptionService devAppsSubscriptionService;
+    private readonly IProjectWindowEventsService projectWindowEventsService;
 
     public string DevAppFilePath { get; set; } = "";
 
@@ -111,7 +113,8 @@ public partial class MainWindow : Window, IMainWindowView
         IGitFeaturesCreator gitFeaturesCreator,
         IGroupFeaturesCreator groupFeaturesCreator,
         IServiceProvider serviceProvider,
-        IDevAppsSubscriptionService devAppsSubscriptionService
+        IDevAppsSubscriptionService devAppsSubscriptionService,
+        IProjectWindowEventsService projectWindowEventsService
     )
     {
         #region Dev App Services
@@ -150,15 +153,23 @@ public partial class MainWindow : Window, IMainWindowView
         DataContext = MainWindowViewModel;
         this.serviceProvider = serviceProvider;
         this.devAppsSubscriptionService = devAppsSubscriptionService;
+        this.projectWindowEventsService = projectWindowEventsService;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         this.devAppsSubscriptionService.Subscribe += DevAppsSubscriptionService_Subscribe;
+        this.projectWindowEventsService.OnProjectsChanged += ProjectWindowEventsService_OnProjectsChanged;
         SearchProjectEvent.Invoke(this, EventArgs.Empty);
         FetchDevAppsEvent!.Invoke(this, EventArgs.Empty);
         NewProjectEvent.Invoke(this, EventArgs.Empty);
 
+    }
+
+    private void ProjectWindowEventsService_OnProjectsChanged(object? sender, EventArgs e)
+    {
+        SearchProjectEvent.Invoke(this, EventArgs.Empty);
+        this.ProjectPathsListView.SelectedItem = null;
     }
 
     private void DevAppsSubscriptionService_Subscribe(object? sender, EventArgs e)

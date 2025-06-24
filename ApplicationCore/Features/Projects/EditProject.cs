@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Common;
+﻿using Infrastructure.Repositories;
 
 namespace ApplicationCore.Features.Projects
 {
@@ -6,7 +6,7 @@ namespace ApplicationCore.Features.Projects
         long Id,
         string Name,
         string Path,
-        int IDEPathId,
+        int? IDEPathId,
         string FileName
     );
 
@@ -17,71 +17,42 @@ namespace ApplicationCore.Features.Projects
 
     public class EditProjectService(
         IProjectRepository projectRepository,
-        INotificationMessageService notificationMessageService
+        IDevAppRepository devAppRepository
     ) : IEditProjectService
     {
         private readonly IProjectRepository projectRepository = projectRepository;
 
         public async Task<bool> HandleAsync(EditProjectCommand command)
         {
+            int defaultDevAppId = command.IDEPathId ?? 0;
+
             var project = await projectRepository.GetOne(command.Id);
 
-            if (project == null)
-            {
-                notificationMessageService.Create(
-                    "Project to edit not found!",
-                    "Edit Project",
-                    NotificationType.Error
-                );
-                return false;
-            }
+            ArgumentNullException.ThrowIfNull(project);
 
             if (command.Name is null || command.Name is "")
             {
-                notificationMessageService.Create(
-                    "Project Name must be provided",
-                    "Edit Project",
-                    NotificationType.Error
-                );
-                return false;
+                throw new ApplicationException("Project Name must be provided");
+
             }
 
             if (command.Path is null || command.Path is "")
             {
-                notificationMessageService.Create(
-                    "Project Path must be provided",
-                    "Edit Project",
-                    NotificationType.Error
-                );
-                return false;
+                throw new ApplicationException("Project Path must be provided");
             }
 
             if (command.IDEPathId is 0)
             {
-                notificationMessageService.Create(
-                    "Project Dev App must be provided",
-                    "Edit Project",
-                    NotificationType.Error
-                );
-                return false;
+                var devApps = await devAppRepository.GetAll();
+                defaultDevAppId = devApps.First().Id;
             }
 
             project.Name = command.Name;
             project.Path = command.Path;
-            project.IDEPathId = command.IDEPathId;
+            project.IDEPathId = defaultDevAppId;
             project.Filename = command.FileName;
 
-            var result = await this.projectRepository.Edit(project);
-            if (result)
-            {
-                notificationMessageService.Create(
-                    "Record has been updated!",
-                    "Edit Project",
-                    NotificationType.Success
-                );
-            }
-
-            return result;
+            return await this.projectRepository.Edit(project);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace ApplicationCore.Features.Projects
             this.groupRepository = groupRepository;
             this._addProjectServiceInstance ??= new AddProjectService(
                 projectRepository,
-                notificationMessageService
+                devAppRepository
             );
         }
 
@@ -55,7 +55,7 @@ namespace ApplicationCore.Features.Projects
 
         public IEditProjectService CreateEditAddProjectService()
         {
-            return new EditProjectService(projectRepository, notificationMessageService);
+            return new EditProjectService(projectRepository, devAppRepository);
         }
 
         public IDeleteProjectService CreateDeleteAddProjectService()

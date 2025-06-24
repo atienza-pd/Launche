@@ -67,115 +67,63 @@
             SelectedValue="{Binding SelectedIdePath, UpdateSourceTrigger=PropertyChanged}" />
         <Grid
             Grid.Row="3"
-            Height="23"
-            Margin="0,5,0,0"
-            VerticalAlignment="Top"
+            Margin="0,2,0,0"
             Background="#404040">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label
-                Grid.Column="0"
-                Width="75"
                 HorizontalAlignment="Left"
                 Content="Project Path"
                 Foreground="White" />
-            <Button
-                x:Name="btnOpenDialogProjectPath"
-                Grid.Column="2"
-                Height="20"
-                Margin="0,0,5,0"
-                VerticalAlignment="Center"
-                Click="btnOpenDialogProjectPath_Click"
-                Content="Open Dialog">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="3" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button
-                x:Name="btnNewProjectPath"
-                Grid.Column="1"
-                Height="20"
-                Margin="0,0,5,0"
-                VerticalAlignment="Center"
-                Click="btnNewProjectPath_Click"
-                Content="New"
-                IsEnabled="{Binding EnableAddNewProject}">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="3" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button
-                x:Name="btnDeleteProjectPath"
-                Grid.Column="3"
-                Height="20"
-                Margin="0,0,5,0"
-                VerticalAlignment="Center"
-                Click="btnDeleteProjectPath_Click"
-                Content="Delete">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="3" />
-                    </Style>
-                </Button.Resources>
-            </Button>
         </Grid>
-        <Grid
-            Grid.Row="4"
-            Height="26"
-            VerticalAlignment="Center">
+        <Grid Grid.Row="4" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="30" />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label
-                Grid.Column="0"
-                VerticalAlignment="Top"
-                Content="Name"
-                ForceCursor="True" />
-            <Label
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                VerticalAlignment="Top"
-                Content="Path" />
-        </Grid>
-        <Grid Grid.Row="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <TextBox
-                Grid.Column="0"
-                Grid.ColumnSpan="1"
-                Height="20"
-                Margin="0,0,5,0"
-                VerticalAlignment="Top"
-                Text="{Binding SelectedProjectPath.Name}"
-                TextWrapping="NoWrap" />
-            <TextBox
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Height="20"
-                VerticalAlignment="Top"
-                Text="{Binding SelectedProjectPath.Path}"
-                TextWrapping="NoWrap" />
-
-            <Button
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label
+                    Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Content="Name"
+                    ForceCursor="True" />
+                <TextBox
+                    Grid.Column="1"
+                    Height="20"
+                    Margin="0,0,5,0"
+                    IsReadOnly="True"
+                    IsReadOnlyCaretVisible="True"
+                    Text="{Binding SelectedProjectPath.Name}"
+                    TextWrapping="NoWrap" />
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label
+                    Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Content="Path" />
+                <TextBox
+                    Grid.Row="1"
+                    Height="20"
+                    Margin="0,0,0,0"
+                    IsReadOnly="True"
+                    IsReadOnlyCaretVisible="True"
+                    Text="{Binding SelectedProjectPath.Filename}"
+                    TextWrapping="NoWrap" />
+            </Grid>
+            <!--<Button
                 Grid.Column="3"
-                Height="20"
-                Margin="5,0,5,0"
-                VerticalAlignment="Top"
+                Height="22"
+                Margin="5,0,0,0"
                 Click="btnSaveProjectPath_Click"
                 Content="Save">
                 <Button.Resources>
@@ -183,32 +131,34 @@
                         <Setter Property="CornerRadius" Value="3" />
                     </Style>
                 </Button.Resources>
-            </Button>
+            </Button>-->
         </Grid>
-        <Grid Grid.Row="6">
+        <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+
+
+        </Grid>
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label
                 Grid.Column="0"
                 VerticalAlignment="Top"
-                Content="File Name:"
+                Content="Path:"
                 ForceCursor="True" />
             <TextBox
                 Grid.Column="1"
-                Grid.ColumnSpan="8"
                 Height="20"
-                Margin="0,0,0,0"
-                VerticalAlignment="Center"
-                Text="{Binding SelectedProjectPath.Filename}"
+                IsReadOnly="True"
+                IsReadOnlyCaretVisible="True"
+                Text="{Binding SelectedProjectPath.Path}"
                 TextWrapping="NoWrap" />
         </Grid>
 

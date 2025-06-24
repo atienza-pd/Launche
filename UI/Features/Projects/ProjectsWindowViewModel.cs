@@ -1,6 +1,7 @@
 ﻿
 
 using ApplicationCore.Common;
+using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Projects;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -59,48 +60,51 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
     }
 
-    private void OnPropertyChanged(string v)
-    {
-        throw new NotImplementedException();
-    }
 
     private string _search;
     private ObservableCollection<ProjectViewModel> projects;
-    private ProjectViewModel? project;
+    private ProjectViewModel? project = new();
     private Visibility saveNotificationVisibility = Visibility.Hidden;
     private readonly IGetAllProjectService getAllProjectService;
     private readonly INotificationMessageService notificationMessageService;
     private readonly IEditProjectService editProjectService;
     private readonly IProjectWindowEventsService projectWindowEventsService;
+    private readonly IDeleteProjectService deleteProjectService;
     private readonly IAddProjectService addProjectService;
 
     public ProjectsWindowViewModel(IGetAllProjectService getAllProjectService,
         INotificationMessageService notificationMessageService,
         IEditProjectService editProjectService,
         IProjectWindowEventsService projectWindowEventsService,
+        IDeleteProjectService deleteProjectService,
         IAddProjectService addProjectService)
     {
         DeleteCommand = new RelayCommand(param => DeleteItem((ProjectViewModel)param!));
-        SaveCommand = new RelayCommand(SaveDevAppsAsync);
+        SaveCommand = new RelayCommand(SaveAsync);
         AddNewCommand = new RelayCommand(AddNew);
         OpenDialogCommand = new RelayCommand(OpenDialog);
         this.getAllProjectService = getAllProjectService;
         this.notificationMessageService = notificationMessageService;
         this.editProjectService = editProjectService;
         this.projectWindowEventsService = projectWindowEventsService;
+        this.deleteProjectService = deleteProjectService;
         this.addProjectService = addProjectService;
     }
 
     private void OpenDialog()
     {
-        var openFolderDialog = new OpenFileDialog { Filter = "Executable Files | *.exe" };
+        var openFolderDialog = new OpenFolderDialog();
         var result = openFolderDialog.ShowDialog() ?? false;
 
         if (!result)
         {
             return;
         }
-        Project = new() { Id = Project?.Id ?? 0, Path = openFolderDialog.FileName, Name = Project?.Name! };
+
+        string filePath = openFolderDialog.FolderName;
+        string name = string.IsNullOrEmpty(Project.Name) ? openFolderDialog.SafeFolderName : Project.Name;
+
+        Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name! };
     }
 
     private void AddNew()
@@ -109,34 +113,12 @@ public class ProjectsWindowViewModel : ViewModelBase
         this.Project = new();
     }
 
-    private async void SaveDevAppsAsync()
+    private async void SaveAsync()
     {
         try
         {
-            if (Project == null)
+            if (!ValidateFields())
             {
-                this.notificationMessageService.Create("Invalid Project data.",
-                    "Save Project",
-                    NotificationType.Error);
-
-                return;
-            }
-
-            if (String.IsNullOrEmpty(Project.Name) || String.IsNullOrWhiteSpace(Project.Name))
-            {
-                this.notificationMessageService.Create("Name is required!",
-                    "Save Project",
-                    NotificationType.Error);
-
-                return;
-            }
-
-            if (String.IsNullOrEmpty(Project.Path) || String.IsNullOrWhiteSpace(Project.Path))
-            {
-                this.notificationMessageService.Create("Path is required!",
-                    "Save Project",
-                    NotificationType.Error);
-
                 return;
             }
 
@@ -171,16 +153,85 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            this.notificationMessageService.Create(ex.Message,
-                    "Save Dev App",
-                    NotificationType.Error);
+            this.notificationMessageService.Create(
+                ex.Message,
+                "Save Dev App",
+                NotificationType.Error
+            );
         }
 
     }
 
-    private void DeleteItem(ProjectViewModel devAppViewModel)
+    private bool ValidateFields()
     {
-        throw new NotImplementedException();
+        if (Project == null)
+        {
+            this.notificationMessageService.Create("Invalid Project data.",
+                "Save Project",
+                NotificationType.Error);
+
+            return false;
+        }
+
+        if (String.IsNullOrEmpty(Project.Name) || String.IsNullOrWhiteSpace(Project.Name))
+        {
+            this.notificationMessageService.Create("Name is required!",
+                "Save Project",
+                NotificationType.Error);
+
+            return false;
+        }
+
+        if (String.IsNullOrEmpty(Project.Path) || String.IsNullOrWhiteSpace(Project.Path))
+        {
+            this.notificationMessageService.Create("Path is required!",
+                "Save Project",
+                NotificationType.Error);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private async void DeleteItem(ProjectViewModel item)
+    {
+        try
+        {
+            if (Projects.Count == 1)
+            {
+                this.notificationMessageService.Create("Single project should exists!",
+                   "Delete Project",
+                   NotificationType.Error);
+
+                return;
+            }
+
+            if (item is null)
+            {
+                this.notificationMessageService.Create("No selected Project to be deleted!",
+                   "Delete Project",
+                   NotificationType.Error);
+
+                return;
+            }
+
+            var result = await this.deleteProjectService.HandleAsync(id: item.Id);
+
+            if (result)
+            {
+                Projects.Remove(item);
+                Project = new();
+                projectWindowEventsService.ProjectsChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+
+            this.notificationMessageService.Create(ex.Message,
+                    "Delete Project",
+                    NotificationType.Error);
+        }
     }
 
     private async void SearchProjects(string search)

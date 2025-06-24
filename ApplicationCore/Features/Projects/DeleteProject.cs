@@ -11,6 +11,13 @@ public class DeleteProjectService(IProjectRepository projectRepository) : IDelet
 
     public async Task<bool> HandleAsync(long id)
     {
+        var projects = await projectRepository.GetAll();
+
+        if (projects.Count() == 1)
+        {
+            throw new ApplicationException("Single project should exists!");
+        }
+
         return await this.projectRepository.Delete(id);
     }
 }
