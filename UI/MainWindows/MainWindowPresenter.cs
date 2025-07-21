@@ -191,16 +191,31 @@ public class MainWindowPresenter
     private void Presenter_SelectProjectEvent(object? sender, EventArgs e)
     {
         var project = view.SelectedProject;
+        try
+        {
+            var currentGitBranch = view.GetCurrentGitBranchService!.Handle(
+               new() { DirectoryPath = project.Path }
+           );
+        }
+        catch (Exception ex)
+        {
 
-        var currentGitBranch = view.GetCurrentGitBranchService!.Handle(
-            new() { DirectoryPath = project.Path }
-        );
-        project.CurrentGitBranch = currentGitBranch;
-        this.view.MainWindowViewModel!.SelectedProjectPath = project.Copy();
+            project.CurrentGitBranch = ex.Message;
+        }
 
-        // Selected Dev App : Must be same reference, data must be on view model list to set the value
-        this.view.MainWindowViewModel!.SelectedIdePath =
-            this.view.MainWindowViewModel!.IdePathsModels!.First(x => x.Id == project.IDEPathId);
+        try
+        {
+            this.view.MainWindowViewModel!.SelectedProjectPath = project.Copy();
+
+            // Selected Dev App : Must be same reference, data must be on view model list to set the value
+            this.view.MainWindowViewModel!.SelectedIdePath =
+                this.view.MainWindowViewModel!.IdePathsModels!.First(x => x.Id == project.IDEPathId);
+        }
+        catch (Exception)
+        {
+
+
+        }
     }
 
     private async void Presenter_SortUpProjectEvent(object? sender, EventArgs e)

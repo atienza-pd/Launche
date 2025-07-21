@@ -1,6 +1,5 @@
 using ApplicationCore.Common;
 using ApplicationCore.Features.Projects;
-using Infrastructure.Models;
 using Moq;
 using Xunit;
 

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Models;
+﻿namespace ApplicationCore.Features.DevApps;
 
 public class DevApp
 {

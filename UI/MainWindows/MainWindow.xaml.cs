@@ -2,7 +2,6 @@
 using ApplicationCore.Features.Git;
 using ApplicationCore.Features.Groups;
 using ApplicationCore.Features.Projects;
-using Infrastructure.Models;
 using Infrastructure.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
