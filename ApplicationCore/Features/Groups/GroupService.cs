@@ -1,24 +1,20 @@
-﻿using Infrastructure.Repositories;
-
-namespace ApplicationCore.Features.Groups;
+﻿namespace ApplicationCore.Features.Groups;
 
 public class GetAllGroupViewModel
 {
     public IEnumerable<GroupViewModel> Groups { get; init; } = [];
 }
 
-public class GetAllGroupQuery { }
-
-public interface IGetAllGroupService
+public interface IGroupService
 {
-    Task<GetAllGroupViewModel> HandleAsync(GetAllGroupQuery query);
+    Task<GetAllGroupViewModel> GetAll();
 }
 
-public class GetAllGroupService(IGroupRepository groupRepository) : IGetAllGroupService
+public class GroupService(IGroupRepository groupRepository) : IGroupService
 {
     private readonly IGroupRepository groupRepository = groupRepository;
 
-    public async Task<GetAllGroupViewModel> HandleAsync(GetAllGroupQuery query)
+    public async Task<GetAllGroupViewModel> GetAll()
     {
         var groups = await groupRepository.GetAll();
 

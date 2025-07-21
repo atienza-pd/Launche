@@ -1,6 +1,5 @@
-﻿using System.Data.SQLite;
-using Infrastructure.Database;
-using Infrastructure.Models;
+﻿using Infrastructure.Database;
+using System.Data.SQLite;
 
 namespace ApplicationCore.Features.Projects;
 

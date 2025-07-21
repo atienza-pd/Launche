@@ -18,8 +18,8 @@
             <RowDefinition Height="33" />
             <RowDefinition Height="23" />
             <RowDefinition Height="28" />
-            <RowDefinition Height="28" />
-            <RowDefinition Height="28" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="28" />
             <RowDefinition Height="28" />
             <RowDefinition Height="28" />
@@ -79,8 +79,8 @@
         </Grid>
         <Grid Grid.Row="4" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
@@ -94,7 +94,7 @@
                     Content="Name"
                     ForceCursor="True" />
                 <TextBox
-                    Grid.Column="1"
+                    Grid.Row="1"
                     Height="20"
                     Margin="0,0,5,0"
                     IsReadOnly="True"
@@ -110,7 +110,7 @@
                 <Label
                     Grid.Row="0"
                     VerticalAlignment="Top"
-                    Content="Path" />
+                    Content="File Name" />
                 <TextBox
                     Grid.Row="1"
                     Height="20"
@@ -120,10 +120,11 @@
                     Text="{Binding SelectedProjectPath.Filename}"
                     TextWrapping="NoWrap" />
             </Grid>
-            <!--<Button
-                Grid.Column="3"
+            <Button
+                Grid.Column="2"
                 Height="22"
                 Margin="5,0,0,0"
+                VerticalAlignment="Bottom"
                 Click="btnSaveProjectPath_Click"
                 Content="Save">
                 <Button.Resources>
@@ -131,30 +132,20 @@
                         <Setter Property="CornerRadius" Value="3" />
                     </Style>
                 </Button.Resources>
-            </Button>-->
+            </Button>
         </Grid>
         <Grid Grid.Row="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-
-
-        </Grid>
-        <Grid Grid.Row="6">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
             <Label
-                Grid.Column="0"
+                Grid.Row="0"
                 VerticalAlignment="Top"
-                Content="Path:"
+                Content="Path"
                 ForceCursor="True" />
             <TextBox
-                Grid.Column="1"
+                Grid.Row="1"
                 Height="20"
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
@@ -162,7 +153,7 @@
                 TextWrapping="NoWrap" />
         </Grid>
 
-        <Label Grid.Row="7" Content="{Binding SelectedProjectPath.CurrentGitBranch}" />
+        <Label Grid.Row="6" Content="{Binding SelectedProjectPath.CurrentGitBranch}" />
 
         <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>

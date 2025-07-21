@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Features.Git;
-using Infrastructure;
 using Moq;
 using Xunit;
 
@@ -15,7 +14,7 @@ public class GetGitCurrentBranchTests
 
         stubService.Setup(x => x.GetCurrentBranch(It.IsAny<string>())).Returns("Branch");
 
-        var sut = new GetCurrentGitBranchService(stubService.Object);
+        var sut = new GitService(stubService.Object);
 
         // Act
         var actual = sut.Handle(new());

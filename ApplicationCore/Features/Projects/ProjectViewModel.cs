@@ -5,7 +5,7 @@
         public long Id { get; set; } = 0;
         public string Name { get; set; } = "";
         public string Path { get; set; } = "";
-        public int IDEPathId { get; set; }
+        public int? IDEPathId { get; set; }
         public int SortId { get; init; }
         public string Filename { get; init; } = "";
         public long? GroupId { get; set; }

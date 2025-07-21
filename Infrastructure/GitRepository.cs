@@ -1,11 +1,7 @@
-﻿using LibGit2Sharp;
+﻿using ApplicationCore.Features.Git;
+using LibGit2Sharp;
 
 namespace Infrastructure;
-
-public interface IGitRepository
-{
-    string GetCurrentBranch(string projectPath);
-}
 
 public class GitRepository : IGitRepository
 {
@@ -21,9 +17,9 @@ public class GitRepository : IGitRepository
 
             return $"Current Git Branch: {branch?.FriendlyName}" ?? "";
         }
-        catch (RepositoryNotFoundException ex)
+        catch (RepositoryNotFoundException)
         {
-            return ex.Message;
+            throw new ApplicationException("No Respository found for this Branch!");
         }
     }
 }
