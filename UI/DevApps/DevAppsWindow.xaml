@@ -6,7 +6,6 @@
     xmlns:devapps="clr-namespace:UI.DevApps"
     xmlns:local="clr-namespace:UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodels="clr-namespace:UI.Windows.Group.ViewModels;assembly=ApplicationCore"
     Title="Add Development Apps"
     Width="600"
     Height="400"
