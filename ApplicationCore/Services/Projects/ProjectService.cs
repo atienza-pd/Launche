@@ -7,7 +7,7 @@ namespace ApplicationCore.Features.Projects;
 public interface IProjectService
 {
     Task<ProjectViewModel> GetLast();
-    Task<Project> GetOne(long id);
+    Task<ProjectViewModel> GetOne(long id);
     Task<GetAllProjectViewModel> GetAll();
     Task<bool> Add(Project param);
     Task<bool> Edit(Project param);
@@ -15,6 +15,7 @@ public interface IProjectService
     Task<bool> SortUp(int sortId);
     Task<bool> SortDown(int sortId);
     Task<bool> RemoveProjectFromGroup(long projectId);
+    Task<bool> AddProjectToGroup(long projectId, int groupId);
     Task<SearchProjectViewModel> Search(string search);
 
 }
@@ -207,8 +208,6 @@ public class ProjectService(
                         EnableAddToGroup = false,
                         GroupName = groups.FirstOrDefault(group => group.Id == value.GroupId)?.Name,
                         DevAppPath = devApps.First(devApp => devApp.Id == value.IDEPathId).Path,
-                        CurrentGitBranch =
-                            $"Current Git Branch: {this.gitService.GetCurrentBranch(value.Path)}",
                     };
                 }
             ),
@@ -229,9 +228,11 @@ public class ProjectService(
         };
     }
 
-    public async Task<Project> GetOne(long id)
+    public async Task<ProjectViewModel> GetOne(long id)
     {
-        var project = await this.projectRepository.GetOne();
+        var project = await this.projectRepository.GetOne(id);
+        var devApp = await this.devAppRepository.GetById(project.IDEPathId ?? 0);
+        var git = gitService.GetCurrentBranch(project.Path);
 
         return new()
         {
@@ -240,6 +241,8 @@ public class ProjectService(
             Path = project.Path,
             IDEPathId = project.IDEPathId,
             Filename = project.Filename,
+            DevAppName = devApp.Name,
+            CurrentGitBranch = git
         };
     }
 
@@ -262,6 +265,20 @@ public class ProjectService(
     public async Task<bool> SortUp(int sortId)
     {
         return await projectRepository.SortUp(sortId);
+    }
+
+    public async Task<bool> AddProjectToGroup(long projectId, int groupId)
+    {
+        var project = await projectRepository.GetOne(projectId);
+        var group = await groupRepository.GetOne(groupId);
+
+        ArgumentNullException.ThrowIfNull(project);
+        ArgumentNullException.ThrowIfNull(group);
+
+
+        project.GroupId = groupId;
+
+        return await projectRepository.Edit(project);
     }
 }
 

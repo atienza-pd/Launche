@@ -65,30 +65,22 @@ public class ProjectsWindowViewModel : ViewModelBase
     private ObservableCollection<ProjectViewModel> projects;
     private ProjectViewModel? project = new();
     private Visibility saveNotificationVisibility = Visibility.Hidden;
-    private readonly IGetAllProjectService getAllProjectService;
+    private readonly IProjectService projectService;
     private readonly INotificationMessageService notificationMessageService;
-    private readonly IEditProjectService editProjectService;
     private readonly IProjectWindowEventsService projectWindowEventsService;
-    private readonly IDeleteProjectService deleteProjectService;
-    private readonly IAddProjectService addProjectService;
 
-    public ProjectsWindowViewModel(IGetAllProjectService getAllProjectService,
+    public ProjectsWindowViewModel(IProjectService projectService,
         INotificationMessageService notificationMessageService,
-        IEditProjectService editProjectService,
-        IProjectWindowEventsService projectWindowEventsService,
-        IDeleteProjectService deleteProjectService,
-        IAddProjectService addProjectService)
+        IProjectWindowEventsService projectWindowEventsService
+        )
     {
         DeleteCommand = new RelayCommand(param => DeleteItem((ProjectViewModel)param!));
         SaveCommand = new RelayCommand(SaveAsync);
         AddNewCommand = new RelayCommand(AddNew);
         OpenDialogCommand = new RelayCommand(OpenDialog);
-        this.getAllProjectService = getAllProjectService;
+        this.projectService = projectService;
         this.notificationMessageService = notificationMessageService;
-        this.editProjectService = editProjectService;
         this.projectWindowEventsService = projectWindowEventsService;
-        this.deleteProjectService = deleteProjectService;
-        this.addProjectService = addProjectService;
     }
 
     private void OpenDialog()
@@ -124,16 +116,20 @@ public class ProjectsWindowViewModel : ViewModelBase
 
             if (this.Project.Id == 0)
             {
-                await this.addProjectService.HandleAsync(new(Name: Project.Name, Path: Project.Path, IDEPathId: null, FileName: Project.Filename));
+                await this.projectService.Add(new() { Name = Project.Name, Path = Project.Path, IDEPathId = null, Filename = Project.Filename });
 
                 SaveNotificationVisibility = Visibility.Visible;
             }
             else
             {
-                await this.editProjectService.HandleAsync(new(Id: Project.Id, Name: Project.Name,
-                    Path: Project.Path,
-                    IDEPathId: Project.IDEPathId,
-                    FileName: Project.Filename)
+                await this.projectService.Edit(new()
+                {
+                    Id = Project.Id,
+                    Name = Project.Name,
+                    Path = Project.Path,
+                    IDEPathId = Project.IDEPathId,
+                    Filename = Project.Filename
+                }
                     );
 
                 SaveNotificationVisibility = Visibility.Visible;
@@ -142,7 +138,7 @@ public class ProjectsWindowViewModel : ViewModelBase
             this.projectWindowEventsService.ProjectsChanged();
             long id = this.Project.Id;
 
-            var result = await getAllProjectService.HandleAsync();
+            var result = await projectService.GetAll();
             this.Projects = [.. result.Projects.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
 
             this.Project = Projects.FirstOrDefault(x => x.Id == id) ?? new();
@@ -216,7 +212,7 @@ public class ProjectsWindowViewModel : ViewModelBase
                 return;
             }
 
-            var result = await this.deleteProjectService.HandleAsync(id: item.Id);
+            var result = await this.projectService.Delete(id: item.Id);
 
             if (result)
             {
@@ -236,7 +232,7 @@ public class ProjectsWindowViewModel : ViewModelBase
 
     private async void SearchProjects(string search)
     {
-        var result = await getAllProjectService.HandleAsync();
+        var result = await projectService.GetAll();
         this.Projects = [.. result.Projects.Where(x => x.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
     }
 

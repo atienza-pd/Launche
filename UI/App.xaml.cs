@@ -1,7 +1,7 @@
-﻿using ApplicationCore;
-using ApplicationCore.Common;
+﻿using ApplicationCore.Common;
 using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Git;
+using ApplicationCore.Features.Groups;
 using ApplicationCore.Features.Projects;
 using Infrastructure;
 using Infrastructure.Database;
@@ -26,9 +26,9 @@ namespace UI
             var serviceProvider = GetCurrentServiceProvider();
             var mainWindow = serviceProvider.GetService<MainWindow>();
             var notificationService = serviceProvider.GetService<INotificationMessageService>();
-            var startup = serviceProvider.GetService<IStartup>();
+            var migration = serviceProvider.GetService<IInitializedDatabaseMigration>();
             notificationService!.Notify += NotificationService_Notify;
-            await startup!.Init();
+            await migration!.Execute();
             mainWindow?.Show();
         }
 
@@ -68,19 +68,11 @@ namespace UI
                 .AddTransient<ProjectsWindow>()
                 .AddTransient<DevAppsWindowViewModel>()
                 .AddTransient<ProjectsWindowViewModel>()
-                .AddSingleton<IAddDevAppService, AddDevAppService>()
-                .AddSingleton<IEditDevAppService, EditDevAppService>()
-                .AddSingleton<IDeleteDevAppService, DeleteDevAppService>()
-                .AddSingleton<IGetAllDevAppService, GetAllDevAppService>()
-                .AddSingleton<IGetOneDevAppService, GetOneDevAppService>()
-                .AddSingleton<IAddProjectService, AddProjectService>()
-                .AddSingleton<IEditProjectService, EditProjectService>()
-                .AddSingleton<IDeleteProjectService, DeleteProjectService>()
-                .AddSingleton<IGetAllProjectService, GetAllProjectService>()
+                .AddTransient<MainWindowViewModel>()
                 .AddSingleton<IInitializedDatabaseMigration, InitializedDatabaseMigration>()
-                .AddSingleton<IDevAppFeaturesCreator, DevAppFeaturesCreator>()
+
                 .AddSingleton<INotificationMessageService, NotificationMessageService>()
-                .AddSingleton<IProjectFeaturesCreator, ProjectFeaturesCreator>()
+
                 .AddSingleton<IDevAppsSubscriptionService, DevAppsSubscriptionService>()
                 .AddSingleton<IProjectWindowEventsService, ProjectWindowEventsService>()
                 .AddSingleton<IAddTableSchemaVersion, AddTableSchemaVersion>()
@@ -93,6 +85,11 @@ namespace UI
                 .AddSingleton<IGroupRepository, GroupRepository>()
                 .AddSingleton<IDevAppRepository, DevAppRepository>()
                 .AddSingleton<IProjectRepository, ProjectRepository>()
+                .AddSingleton<IProjectService, ProjectService>()
+                .AddSingleton<IDevAppService, DevAppService>()
+                .AddSingleton<IGitService, GitService>()
+                .AddSingleton<IGroupService, GroupService>()
+
                 .BuildServiceProvider();
         }
     }

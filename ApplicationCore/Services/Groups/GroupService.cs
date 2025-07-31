@@ -2,7 +2,7 @@
 
 public class GetAllGroupViewModel
 {
-    public IEnumerable<GroupViewModel> Groups { get; init; } = [];
+    public IEnumerable<Group> Groups { get; init; } = [];
 }
 
 public interface IGroupService
@@ -20,7 +20,7 @@ public class GroupService(IGroupRepository groupRepository) : IGroupService
 
         return new()
         {
-            Groups = groups.Select(group => new GroupViewModel()
+            Groups = groups.Select(group => new Group()
             {
                 Id = group.Id,
                 Name = group.Name,
