@@ -61,7 +61,7 @@
             Margin="0,0,5,0"
             IsReadOnly="True"
             IsReadOnlyCaretVisible="True"
-            Text="{Binding SelectedProjectPath.Name}"
+            Text="{Binding Project.DevAppName}"
             TextWrapping="NoWrap" />
         <Grid
             Grid.Row="3"
@@ -97,7 +97,7 @@
                     Margin="0,0,5,0"
                     IsReadOnly="True"
                     IsReadOnlyCaretVisible="True"
-                    Text="{Binding SelectedProjectPath.Name}"
+                    Text="{Binding Project.Name}"
                     TextWrapping="NoWrap" />
             </Grid>
             <Grid Grid.Column="1">
@@ -115,7 +115,7 @@
                     Margin="0,0,0,0"
                     IsReadOnly="True"
                     IsReadOnlyCaretVisible="True"
-                    Text="{Binding SelectedProjectPath.Filename}"
+                    Text="{Binding Project.Filename}"
                     TextWrapping="NoWrap" />
             </Grid>
             <Button
@@ -147,11 +147,11 @@
                 Height="20"
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
-                Text="{Binding SelectedProjectPath.Path}"
+                Text="{Binding Project.Path}"
                 TextWrapping="NoWrap" />
         </Grid>
 
-        <Label Grid.Row="6" Content="{Binding SelectedProjectPath.CurrentGitBranch}" />
+        <Label Grid.Row="6" Content="{Binding Project.CurrentGitBranch}" />
 
         <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>
@@ -182,6 +182,7 @@
             ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
             KeyDown="lvProjectPaths_KeyDown"
             MouseDoubleClick="ProjectPathsList_MouseDoubleClick"
+            SelectedItem="{Binding SelectedProject}"
             SelectionChanged="ProjectPathsList_SelectionChanged">
             <ListView.Resources>
                 <DataTemplate x:Key="Templ">

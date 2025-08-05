@@ -232,7 +232,7 @@ public class ProjectService(
     {
         var project = await this.projectRepository.GetOne(id);
         var devApp = await this.devAppRepository.GetById(project.IDEPathId ?? 0);
-        var git = gitService.GetCurrentBranch(project.Path);
+        var git = this.GetCurrentGitBranch(project.Path);
 
         return new()
         {
@@ -244,6 +244,18 @@ public class ProjectService(
             DevAppName = devApp.Name,
             CurrentGitBranch = git
         };
+    }
+
+    private string GetCurrentGitBranch(string path)
+    {
+        try
+        {
+            return gitService.GetCurrentBranch(path);
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
     }
 
     public async Task<bool> RemoveProjectFromGroup(long projectId)
