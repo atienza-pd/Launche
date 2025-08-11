@@ -73,7 +73,7 @@ namespace UI
 
                 .AddSingleton<INotificationMessageService, NotificationMessageService>()
 
-                .AddSingleton<IDevAppsSubscriptionService, DevAppsSubscriptionService>()
+                .AddSingleton<IDevAppsEventsService, DevAppsEventsService>()
                 .AddSingleton<IProjectWindowEventsService, ProjectWindowEventsService>()
                 .AddSingleton<IAddTableSchemaVersion, AddTableSchemaVersion>()
                 .AddSingleton<ICheckVersionIfExists, CheckVersionIfExists>()

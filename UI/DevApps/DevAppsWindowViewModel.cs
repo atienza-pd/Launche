@@ -67,12 +67,12 @@ public class DevAppsWindowViewModel : ViewModelBase
     private ObservableCollection<DevAppViewModel> devApps = [];
     private readonly IDevAppService devAppService;
     private readonly INotificationMessageService notificationMessageService;
-    private readonly IDevAppsSubscriptionService devAppsSubscriptionService;
+    private readonly IDevAppsEventsService devAppsEventsService;
 
     public DevAppsWindowViewModel(
         IDevAppService devAppService,
         INotificationMessageService notificationMessageService,
-        IDevAppsSubscriptionService devAppsSubscriptionService
+        IDevAppsEventsService devAppsEventsService
     )
     {
         DeleteCommand = new RelayCommand(param => DeleteItem((DevAppViewModel)param!));
@@ -81,7 +81,7 @@ public class DevAppsWindowViewModel : ViewModelBase
         OpenDialogCommand = new RelayCommand(OpenDialog);
         this.devAppService = devAppService;
         this.notificationMessageService = notificationMessageService;
-        this.devAppsSubscriptionService = devAppsSubscriptionService;
+        this.devAppsEventsService = devAppsEventsService;
     }
 
     private async void SearchDevApps(string search)
@@ -169,7 +169,7 @@ public class DevAppsWindowViewModel : ViewModelBase
                 Visibility = Visibility.Visible;
             }
 
-            this.devAppsSubscriptionService.Create();
+            this.devAppsEventsService.DevAppsChanged();
             int id = this.DevApp.Id;
 
             var result = await devAppService.GetAll();
@@ -202,7 +202,7 @@ public class DevAppsWindowViewModel : ViewModelBase
                 {
                     DevApps.Remove(item);
                     DevApp = new();
-                    devAppsSubscriptionService.Create();
+                    devAppsEventsService.DevAppsChanged();
                 }
             }
         }

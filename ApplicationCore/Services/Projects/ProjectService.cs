@@ -208,6 +208,7 @@ public class ProjectService(
                         EnableAddToGroup = false,
                         GroupName = groups.FirstOrDefault(group => group.Id == value.GroupId)?.Name,
                         DevAppPath = devApps.First(devApp => devApp.Id == value.IDEPathId).Path,
+                        DevAppName = devApps.First(devApp => devApp.Id == value.IDEPathId).Name,
                     };
                 }
             ),

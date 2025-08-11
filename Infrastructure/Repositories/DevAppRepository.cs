@@ -82,7 +82,8 @@ namespace Infrastructure.Repositories
             var connection = createSqliteConnection.Execute();
 
             using var command = connection.CreateCommand();
-            command.CommandText = $"SELECT * FROM {tableName} LIMIT 1";
+            command.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
+            command.Parameters.AddWithValue("@id", id);
             using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {

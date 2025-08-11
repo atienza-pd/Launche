@@ -4,6 +4,7 @@
     {
         public long Id { get; set; } = 0;
         public string Name { get; set; } = "";
+        public string FullName { get => $@"{Name} ({DevAppName})"; }
         public string Path { get; set; } = "";
         public int? IDEPathId { get; set; }
         public string DevAppName { get; set; } = "";

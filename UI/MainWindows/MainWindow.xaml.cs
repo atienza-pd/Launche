@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     private readonly List<Group> groups = [];
     private readonly MainWindowViewModel mainWindowViewModel;
     private readonly IServiceProvider serviceProvider;
-    private readonly IDevAppsSubscriptionService devAppsSubscriptionService;
+    private readonly IDevAppsEventsService devAppsEventsService;
     private readonly IProjectWindowEventsService projectWindowEventsService;
 
     public string DevAppFilePath { get; set; } = "";
@@ -37,7 +37,7 @@ public partial class MainWindow : Window
     public MainWindow(
         MainWindowViewModel mainWindowViewModel,
         IServiceProvider serviceProvider,
-        IDevAppsSubscriptionService devAppsSubscriptionService,
+        IDevAppsEventsService devAppsEventsService,
         IProjectWindowEventsService projectWindowEventsService
     )
     {
@@ -46,28 +46,26 @@ public partial class MainWindow : Window
         DataContext = mainWindowViewModel;
         this.mainWindowViewModel = mainWindowViewModel;
         this.serviceProvider = serviceProvider;
-        this.devAppsSubscriptionService = devAppsSubscriptionService;
+        this.devAppsEventsService = devAppsEventsService;
         this.projectWindowEventsService = projectWindowEventsService;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        //this.devAppsSubscriptionService.Subscribe += DevAppsSubscriptionService_Subscribe;
-        //this.projectWindowEventsService.OnProjectsChanged += ProjectWindowEventsService_OnProjectsChanged;
+        this.devAppsEventsService.OnDevAppsChanged += DevAppsEventsService_OnDevAppsChanged;
+        this.projectWindowEventsService.OnProjectsChanged += ProjectWindowEventsService_OnProjectsChanged;
         this.mainWindowViewModel.LoadProjects();
 
     }
 
-    private void ProjectWindowEventsService_OnProjectsChanged(object? sender, EventArgs e)
+    private void DevAppsEventsService_OnDevAppsChanged(object? sender, EventArgs e)
     {
-        //SearchProjectEvent.Invoke(this, EventArgs.Empty);
-        //this.ProjectPathsListView.SelectedItem = null;
+        this.mainWindowViewModel.LoadProjects();
     }
 
-    private void DevAppsSubscriptionService_Subscribe(object? sender, EventArgs e)
+    private void ProjectWindowEventsService_OnProjectsChanged(object? sender, EventArgs e)
     {
-        //FetchDevAppsEvent!.Invoke(this, EventArgs.Empty);
-        //this.ProjectPathsListView.SelectedItem = null;
+        this.mainWindowViewModel.LoadProjects();
     }
 
     public void FocusOnListViewWhenArrowDown()
