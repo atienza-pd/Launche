@@ -24,7 +24,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="28" />
             <RowDefinition Height="28" />
-            <RowDefinition Height="28" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Menu Height="26" VerticalAlignment="Center">
@@ -77,9 +76,8 @@
         </Grid>
         <Grid Grid.Row="4" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -118,42 +116,33 @@
                     Text="{Binding Project.Filename}"
                     TextWrapping="NoWrap" />
             </Grid>
-            <Button
-                Grid.Column="2"
-                Height="22"
-                Margin="5,0,0,0"
-                VerticalAlignment="Bottom"
-                Click="btnSaveProjectPath_Click"
-                Content="Save">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="3" />
-                    </Style>
-                </Button.Resources>
-            </Button>
+            
         </Grid>
         <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="121*"/>
+                <ColumnDefinition Width="39*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Label
-                Grid.Row="0"
-                VerticalAlignment="Top"
+                VerticalAlignment="Center"
                 Content="Path"
-                ForceCursor="True" />
+                ForceCursor="True" Grid.ColumnSpan="2" />
             <TextBox
                 Grid.Row="1"
                 Height="20"
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
                 Text="{Binding Project.Path}"
-                TextWrapping="NoWrap" />
+                TextWrapping="NoWrap" Grid.ColumnSpan="2" />
         </Grid>
 
         <Label Grid.Row="6" Content="{Binding Project.CurrentGitBranch}" />
 
-        <Grid Grid.Row="8">
+        <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="107" />
@@ -177,7 +166,7 @@
         </Grid>
         <ListView
             x:Name="lvProjectPaths"
-            Grid.Row="9"
+            Grid.Row="8"
             Margin="0,0,0,5"
             ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
             KeyDown="lvProjectPaths_KeyDown"
@@ -243,7 +232,7 @@
                             HeaderTemplate="{StaticResource GroupTemplate}" />
                         <GridViewColumn
                             Width="Auto"
-                            DisplayMemberBinding="{Binding Path=Name}"
+                            DisplayMemberBinding="{Binding Path=FullName}"
                             HeaderContainerStyle="{StaticResource HeaderStyle}"
                             HeaderTemplate="{StaticResource Templ}" />
                         <GridViewColumn
@@ -256,5 +245,4 @@
             </ListView.View>
         </ListView>
     </Grid>
-
 </Window>

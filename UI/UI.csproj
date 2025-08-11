@@ -43,4 +43,12 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\dev\Launche\UI\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\dev\Launche\UI\.editorconfig" />
+  </ItemGroup>
+
 </Project>

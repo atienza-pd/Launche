@@ -28,14 +28,36 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
     }
 
+    public ObservableCollection<DevAppViewModel> DevApps
+    {
+        get { return devApps; }
+        set
+        {
+            devApps = value;
+            OnPropertyChanged(nameof(this.DevApps));
+        }
+    }
+
     public ProjectViewModel? Project
     {
         get { return project; }
         set
         {
-            project = value.Copy();
+            project = value!.Copy();
 
             OnPropertyChanged(nameof(this.Project));
+            SelectedDevApp = DevApps.FirstOrDefault(x => x.Id == project!.IDEPathId);
+        }
+    }
+
+    public DevAppViewModel? SelectedDevApp
+    {
+        get { return devApp; }
+        set
+        {
+            devApp = value;
+
+            OnPropertyChanged(nameof(this.SelectedDevApp));
         }
     }
 
@@ -68,10 +90,14 @@ public class ProjectsWindowViewModel : ViewModelBase
     private readonly IProjectService projectService;
     private readonly INotificationMessageService notificationMessageService;
     private readonly IProjectWindowEventsService projectWindowEventsService;
+    private readonly IDevAppService devAppService;
+    private ObservableCollection<DevAppViewModel> devApps;
+    private DevAppViewModel? devApp;
 
     public ProjectsWindowViewModel(IProjectService projectService,
         INotificationMessageService notificationMessageService,
-        IProjectWindowEventsService projectWindowEventsService
+        IProjectWindowEventsService projectWindowEventsService,
+        IDevAppService devAppService
         )
     {
         DeleteCommand = new RelayCommand(param => DeleteItem((ProjectViewModel)param!));
@@ -81,6 +107,7 @@ public class ProjectsWindowViewModel : ViewModelBase
         this.projectService = projectService;
         this.notificationMessageService = notificationMessageService;
         this.projectWindowEventsService = projectWindowEventsService;
+        this.devAppService = devAppService;
     }
 
     private void OpenDialog()
@@ -94,7 +121,7 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
 
         string filePath = openFolderDialog.FolderName;
-        string name = string.IsNullOrEmpty(Project.Name) ? openFolderDialog.SafeFolderName : Project.Name;
+        string name = string.IsNullOrEmpty(Project!.Name) ? openFolderDialog.SafeFolderName : Project.Name;
 
         Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name! };
     }
@@ -114,9 +141,9 @@ public class ProjectsWindowViewModel : ViewModelBase
                 return;
             }
 
-            if (this.Project.Id == 0)
+            if (this.Project!.Id == 0)
             {
-                await this.projectService.Add(new() { Name = Project.Name, Path = Project.Path, IDEPathId = null, Filename = Project.Filename });
+                await this.projectService.Add(new() { Name = Project.Name, Path = Project.Path, IDEPathId = SelectedDevApp!.Id, Filename = Project.Filename });
 
                 SaveNotificationVisibility = Visibility.Visible;
             }
@@ -127,7 +154,7 @@ public class ProjectsWindowViewModel : ViewModelBase
                     Id = Project.Id,
                     Name = Project.Name,
                     Path = Project.Path,
-                    IDEPathId = Project.IDEPathId,
+                    IDEPathId = SelectedDevApp!.Id,
                     Filename = Project.Filename
                 }
                     );
@@ -239,5 +266,10 @@ public class ProjectsWindowViewModel : ViewModelBase
     public void LoadProjects()
     {
         this.SearchProjects("");
+    }
+
+    public async void LoadDevApps()
+    {
+        this.DevApps = [.. await devAppService.GetAll()];
     }
 }

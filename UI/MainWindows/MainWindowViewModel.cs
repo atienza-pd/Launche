@@ -8,7 +8,6 @@ namespace UI.MainWindows
     public class MainWindowViewModel(IProjectService projectService) : ViewModelBase
     {
         private readonly IProjectService projectService = projectService;
-
         private ObservableCollection<ProjectViewModel> _projects;
         private string _search;
         private ProjectViewModel project;
@@ -28,7 +27,7 @@ namespace UI.MainWindows
             get { return project; }
             set
             {
-                project = value.Copy();
+                project = value;
 
                 OnPropertyChanged(nameof(this.Project));
 
@@ -50,7 +49,7 @@ namespace UI.MainWindows
         private async void GetProject()
         {
 
-            this.Project = await projectService.GetOne(SelectedProject.Id);
+            this.Project = await projectService.GetOne(SelectedProject!.Id);
         }
 
         public string Search
@@ -67,7 +66,7 @@ namespace UI.MainWindows
         private async void SearchProjects(string search)
         {
             var result = await projectService.GetAll();
-            this.Projects = [.. result.Projects.Where(x => x.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
+            this.Projects = [.. result.Projects.Where(x => x.FullName.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
         }
 
         public void LoadProjects()

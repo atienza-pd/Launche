@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using UI.Features.Projects;
 
 namespace UI.Features
@@ -13,7 +14,6 @@ namespace UI.Features
 
         public ProjectsWindow(ProjectsWindowViewModel viewModel)
         {
-
             InitializeComponent();
             DataContext = viewModel;
             this.viewModel = viewModel;
@@ -41,6 +41,15 @@ namespace UI.Features
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             viewModel.LoadProjects();
+            viewModel.LoadDevApps();
+        }
+
+        private void ComboBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (sender is ComboBox comboBox)
+            {
+                comboBox.IsDropDownOpen = true;
+            }
         }
     }
 }

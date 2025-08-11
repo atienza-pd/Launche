@@ -7,6 +7,12 @@
     <OutputType>WinExe</OutputType>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="UITests\**" />
+    <EmbeddedResource Remove="UITests\**" />
+    <None Remove="UITests\**" />
+  </ItemGroup>
+
 <ItemGroup>
 <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
 </ItemGroup>
@@ -24,10 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\UI\UI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UITests\" />
   </ItemGroup>
 
 </Project>
