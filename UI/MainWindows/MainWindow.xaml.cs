@@ -100,19 +100,6 @@ public partial class MainWindow : Window
     //    lvProjectPaths.ScrollIntoView(this.lvProjectPaths.SelectedItem);
     //}
 
-    private void VsCodePathOpenDialogButton_Click(object sender, RoutedEventArgs e)
-    {
-        //var openFolderDialog = new OpenFileDialog { Filter = "Executable Files | *.exe" };
-        //var result = openFolderDialog.ShowDialog() ?? false;
-
-        //if (!result)
-        //{
-        //    return;
-        //}
-
-        //DevAppFilePath = openFolderDialog.FileName;
-        //AddNewDevAppEvent!.Invoke(this, EventArgs.Empty);
-    }
 
     private void ProjectPathsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -124,55 +111,7 @@ public partial class MainWindow : Window
         //SelectProjectEvent.Invoke(this, EventArgs.Empty);
     }
 
-    private void btnOpenDialogProjectPath_Click(object sender, RoutedEventArgs e)
-    {
-        //var openFolderDialog = new OpenFolderDialog();
-        //var result = openFolderDialog.ShowDialog() ?? false;
-
-        //if (!result)
-        //{
-        //    return;
-        //}
-
-        //string filePath = openFolderDialog.FolderName;
-        //string name = openFolderDialog.SafeFolderName;
-        //MainWindowViewModel!.SelectedProjectPath = new() { Name = name, Path = filePath };
-    }
-
-    private void btnSaveProjectPath_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void ProjectPathsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-
-    }
-
-    private void btnDeleteIdePath_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void btnNewProjectPath_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void btnDeleteProjectPath_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void mnuMoveUp_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void mnuMoveDown_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
+    
 
     private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
     {
@@ -209,32 +148,17 @@ public partial class MainWindow : Window
 
     }
 
-    public void ShowNoSelectedProjectMessage()
-    {
-        MessageBox.Show("No Selected Project", "Select Project", MessageBoxButton.OK);
-    }
-
-    private void MenuItem_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
     private void MenuItem_ShowDevApps_Click(object sender, RoutedEventArgs e)
     {
         var mainWindow = serviceProvider.GetService<DevAppsWindow>();
 
-        mainWindow.ShowDialog();
+        mainWindow!.ShowDialog();
     }
 
     private void MenuItemManageProjects_Click(object sender, RoutedEventArgs e)
     {
         var mainWindow = serviceProvider.GetService<ProjectsWindow>();
 
-        mainWindow.ShowDialog();
-    }
-
-    private void lvProjectPaths_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-        this.mainWindowViewModel.OpenProjectDevApp();
+        mainWindow!.ShowDialog();
     }
 }

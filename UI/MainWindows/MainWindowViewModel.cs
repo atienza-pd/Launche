@@ -14,6 +14,7 @@ namespace UI.MainWindows
         public ICommand OpenProjectCommand { get; }
         public ICommand MoveUpCommand { get; }
         public ICommand MoveDownCommand { get; }
+        public ICommand ListItemClickCommand { get; }
         public ICommand OpenFolderWindowCommand { get; }
 
         private readonly IProjectService projectService;
@@ -63,7 +64,13 @@ namespace UI.MainWindows
             this.notificationMessageService = notificationMessageService;
             this.MoveUpCommand = new RelayCommand(MoveUpAsync);
             this.MoveDownCommand = new RelayCommand(MoveDownAsync);
+            ListItemClickCommand = new RelayCommand(OnListItemClick);
             this.OpenFolderWindowCommand = new RelayCommand(OpenFolderWindow);
+        }
+
+        private void OnListItemClick()
+        {
+            OpenProjectDevApp();
         }
 
         private void OpenFolderWindow()
