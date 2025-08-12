@@ -172,8 +172,13 @@
             ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
             KeyDown="lvProjectPaths_KeyDown"
             SelectedItem="{Binding SelectedProject}"
-            SelectionChanged="ProjectPathsList_SelectionChanged" MouseDoubleClick="lvProjectPaths_MouseDoubleClick">
-            
+            SelectionChanged="ProjectPathsList_SelectionChanged">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction 
+            Command="{Binding ListItemClickCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListView.Resources>
                 <DataTemplate x:Key="Templ">
                     <TextBlock HorizontalAlignment="Left" Text="Name" />
