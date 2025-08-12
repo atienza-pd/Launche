@@ -243,7 +243,9 @@ public class ProjectService(
             IDEPathId = project.IDEPathId,
             Filename = project.Filename,
             DevAppName = devApp.Name,
-            CurrentGitBranch = git
+            CurrentGitBranch = git,
+            DevAppPath = devApp.Path,
+            SortId = project.SortId,
         };
     }
 

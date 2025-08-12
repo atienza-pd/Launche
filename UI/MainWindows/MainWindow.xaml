@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:UI"
     xmlns:mainwindows="clr-namespace:UI.MainWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     Title="Launche - Your IDE Launcher"
     Width="650"
     Height="550"
@@ -170,9 +171,9 @@
             Margin="0,0,0,5"
             ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
             KeyDown="lvProjectPaths_KeyDown"
-            MouseDoubleClick="ProjectPathsList_MouseDoubleClick"
             SelectedItem="{Binding SelectedProject}"
-            SelectionChanged="ProjectPathsList_SelectionChanged">
+            SelectionChanged="ProjectPathsList_SelectionChanged" MouseDoubleClick="lvProjectPaths_MouseDoubleClick">
+            
             <ListView.Resources>
                 <DataTemplate x:Key="Templ">
                     <TextBlock HorizontalAlignment="Left" Text="Name" />
@@ -195,17 +196,17 @@
                         IsEnabled="{Binding EnableAddToGroup}" />
                     <MenuItem
                         x:Name="mnuMoveUp"
-                        Click="mnuMoveUp_Click"
+                       Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Header="Move up"
                         IsEnabled="{Binding EnableMoveUp}" />
                     <MenuItem
                         x:Name="mnuMoveDown"
-                        Click="mnuMoveDown_Click"
+                        Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Header="Move down"
                         IsEnabled="{Binding EnableMoveDown}" />
                     <MenuItem
                         x:Name="MnuOpenFolderWindow"
-                        Click="MnuOpenFolderWindow_Click"
+                        Command="{Binding DataContext.OpenFolderWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Header="Open Folder Window" />
                 </ContextMenu>
                 <ToolTip x:Key="ItemToolTip">
