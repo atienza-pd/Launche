@@ -232,4 +232,9 @@ public partial class MainWindow : Window
 
         mainWindow.ShowDialog();
     }
+
+    private void lvProjectPaths_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        this.mainWindowViewModel.OpenProjectDevApp();
+    }
 }
