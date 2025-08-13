@@ -1,24 +1,33 @@
 ﻿using ApplicationCore.Common;
 using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Projects;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
+using UI.Features;
 using UI.Shared;
 
 namespace UI.MainWindows
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public ICommand OpenProjectCommand { get; }
         public ICommand MoveUpCommand { get; }
         public ICommand MoveDownCommand { get; }
         public ICommand ListItemClickCommand { get; }
         public ICommand OpenFolderWindowCommand { get; }
+        public ICommand SearchEnterCommand { get; }
+        public ICommand SearchDownCommand { get; }
+        public RelayCommand OpenDevAppsWindowCommand { get; }
+        public RelayCommand OpenProjectsWindowCommand { get; }
+
+        // Notify the View to focus the ListView
+        public event EventHandler? RequestFocusListView;
 
         private readonly IProjectService projectService;
         private readonly INotificationMessageService notificationMessageService;
+        private readonly IServiceProvider serviceProvider;
         private ObservableCollection<ProjectViewModel> _projects;
         private string _search;
         private ProjectViewModel project;
@@ -58,19 +67,64 @@ namespace UI.MainWindows
             }
         }
 
-        public MainWindowViewModel(IProjectService projectService, INotificationMessageService notificationMessageService)
+        public MainWindowViewModel(IProjectService projectService, INotificationMessageService notificationMessageService, IServiceProvider serviceProvider)
         {
+            // initialize non-nullable fields
+            _projects = [];
+            project = new ProjectViewModel();
+            _search = string.Empty;
+
             this.projectService = projectService;
             this.notificationMessageService = notificationMessageService;
+            this.serviceProvider = serviceProvider;
             this.MoveUpCommand = new RelayCommand(MoveUpAsync);
             this.MoveDownCommand = new RelayCommand(MoveDownAsync);
-            ListItemClickCommand = new RelayCommand(OnListItemClick);
+            this.ListItemClickCommand = new RelayCommand(OnListItemClick);
             this.OpenFolderWindowCommand = new RelayCommand(OpenFolderWindow);
+            this.SearchEnterCommand = new RelayCommand(OnSearchEnter);
+            this.SearchDownCommand = new RelayCommand(OnSearchDown);
+            this.OpenDevAppsWindowCommand = new RelayCommand(OpenDevAppWindow);
+            this.OpenProjectsWindowCommand = new RelayCommand(OpenProjectsWindow);
+        }
+
+        private void OpenProjectsWindow()
+        {
+            var mainWindow = serviceProvider.GetService<ProjectsWindow>();
+
+            mainWindow!.ShowDialog();
+        }
+
+        private void OpenDevAppWindow()
+        {
+            var mainWindow = serviceProvider.GetService<DevAppsWindow>();
+
+            mainWindow!.ShowDialog();
         }
 
         private void OnListItemClick()
         {
             OpenProjectDevApp();
+        }
+
+        private void OnSearchEnter()
+        {
+            // If a project is selected, open it.
+            if (project != null)
+            {
+                OpenProjectDevApp();
+            }
+        }
+
+        private void OnSearchDown()
+        {
+            // Select the first item after search so user can continue with arrows/enter.
+            if (Projects?.Count > 0)
+            {
+                SelectedProject = Projects[0];
+            }
+
+            // Ask the view to focus the ListView (can't set focus from VM)
+            RequestFocusListView?.Invoke(this, EventArgs.Empty);
         }
 
         private void OpenFolderWindow()
