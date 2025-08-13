@@ -30,12 +30,12 @@
         <Menu Height="26" VerticalAlignment="Center">
             <MenuItem
                 Padding="6,3,6,6"
-                Click="MenuItem_ShowDevApps_Click"
+                Command="{Binding OpenDevAppsWindowCommand}"
                 Header="_Manage Dev Apps" />
             <MenuItem
                 Name="MenuItemManageProjects"
                 Padding="6,3,6,6"
-                Click="MenuItemManageProjects_Click"
+                Command="{Binding OpenProjectsWindowCommand}"
                 Header="_Manage Projects" />
         </Menu>
         <Grid
@@ -160,25 +160,28 @@
                 Grid.Column="1"
                 Grid.ColumnSpan="2"
                 VerticalAlignment="Center"
-                KeyUp="txtSearch_KeyUp"
                 Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"
-                TextChanged="TxtSearch_TextChanged"
-                TextWrapping="NoWrap" />
+                TextWrapping="NoWrap">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding SearchEnterCommand}" />
+                    <KeyBinding Key="Down" Command="{Binding SearchDownCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
         </Grid>
         <ListView
             x:Name="lvProjectPaths"
             Grid.Row="8"
             Margin="0,0,0,5"
             ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
-            KeyDown="lvProjectPaths_KeyDown"
-            SelectedItem="{Binding SelectedProject}"
-            SelectionChanged="ProjectPathsList_SelectionChanged">
+            SelectedItem="{Binding SelectedProject}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction 
-            Command="{Binding ListItemClickCommand}" />
+                    <i:InvokeCommandAction Command="{Binding ListItemClickCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <ListView.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding ListItemClickCommand}" />
+            </ListView.InputBindings>
             <ListView.Resources>
                 <DataTemplate x:Key="Templ">
                     <TextBlock HorizontalAlignment="Left" Text="Name" />
@@ -196,7 +199,6 @@
                 <ContextMenu x:Key="ItemContextMenu">
                     <MenuItem
                         x:Name="mnuAddToGroup"
-                        Click="mnuAddToGroup_Click"
                         Header="Add to Group"
                         IsEnabled="{Binding EnableAddToGroup}" />
                     <MenuItem
