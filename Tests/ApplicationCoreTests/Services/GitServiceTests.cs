@@ -2,7 +2,7 @@ using ApplicationCore.Features.Git;
 using Moq;
 using Xunit;
 
-namespace Tests.ApplicationCoreTests.Features.Gits
+namespace Tests.ApplicationCoreTests.Services
 {
     public class GitServiceTests
     {

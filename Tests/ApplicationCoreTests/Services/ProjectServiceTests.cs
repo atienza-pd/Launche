@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Tests.ApplicationCoreTests.Features.Projects
+namespace Tests.ApplicationCoreTests.Services
 {
     public class ProjectServiceTests
     {

@@ -33,7 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApplicationCoreTests\Services\" />
+    <Folder Include="ApplicationCoreTests\Features\DevApps\" />
+    <Folder Include="ApplicationCoreTests\Features\Gits\" />
+    <Folder Include="ApplicationCoreTests\Features\Projects\" />
   </ItemGroup>
 
 </Project>
