@@ -8,8 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApplicationCoreTests\Features\DevApps\**" />
+    <Compile Remove="ApplicationCoreTests\Features\Gits\**" />
+    <Compile Remove="ApplicationCoreTests\Features\Projects\**" />
     <Compile Remove="UITests\**" />
+    <EmbeddedResource Remove="ApplicationCoreTests\Features\DevApps\**" />
+    <EmbeddedResource Remove="ApplicationCoreTests\Features\Gits\**" />
+    <EmbeddedResource Remove="ApplicationCoreTests\Features\Projects\**" />
     <EmbeddedResource Remove="UITests\**" />
+    <None Remove="ApplicationCoreTests\Features\DevApps\**" />
+    <None Remove="ApplicationCoreTests\Features\Gits\**" />
+    <None Remove="ApplicationCoreTests\Features\Projects\**" />
     <None Remove="UITests\**" />
   </ItemGroup>
 
@@ -30,12 +39,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\UI\UI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ApplicationCoreTests\Features\DevApps\" />
-    <Folder Include="ApplicationCoreTests\Features\Gits\" />
-    <Folder Include="ApplicationCoreTests\Features\Projects\" />
   </ItemGroup>
 
 </Project>
