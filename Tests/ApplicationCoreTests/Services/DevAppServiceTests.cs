@@ -2,7 +2,7 @@ using ApplicationCore.Features.DevApps;
 using Moq;
 using Xunit;
 
-namespace Tests.ApplicationCoreTests.Features.DevApps
+namespace Tests.ApplicationCoreTests.Services
 {
     public class DevAppServiceTests
     {
