@@ -167,7 +167,7 @@ namespace UI.MainWindows
                 return;
             }
 
-            SearchProjects("");
+            SearchProjects(this.Search);
         }
 
         private async void MoveUpAsync()
@@ -178,7 +178,7 @@ namespace UI.MainWindows
                 return;
             }
 
-            SearchProjects("");
+            SearchProjects(this.Search);
         }
 
         public void OpenProjectDevApp()
