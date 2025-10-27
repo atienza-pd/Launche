@@ -242,7 +242,7 @@ namespace UI.MainWindows
                 new()
                 {
                     FileName = devAppPath,
-                    Arguments = $"{fullFilePath}",
+                    Arguments = $"\"{fullFilePath}\"",
                     UseShellExecute = true,
                 }
             );
