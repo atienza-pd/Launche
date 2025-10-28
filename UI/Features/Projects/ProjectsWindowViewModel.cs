@@ -123,7 +123,7 @@ public class ProjectsWindowViewModel : ViewModelBase
         string filePath = openFolderDialog.FolderName;
         string name = string.IsNullOrEmpty(Project!.Name) ? openFolderDialog.SafeFolderName : Project.Name;
 
-        Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name! };
+        Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name!, IDEPathId = SelectedDevApp!.Id };
     }
 
     private void AddNew()
