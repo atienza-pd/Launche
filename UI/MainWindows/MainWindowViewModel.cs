@@ -280,7 +280,7 @@ namespace UI.MainWindows
 
         public void LoadProjects()
         {
-            SearchProjects("");
+            SearchProjects(this.Search);
         }
     }
 }
