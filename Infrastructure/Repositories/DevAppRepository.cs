@@ -1,18 +1,9 @@
-﻿using Infrastructure.Database;
-using Infrastructure.Models;
+﻿using ApplicationCore.Features.DevApps;
+using Infrastructure.Database;
 using System.Data.SQLite;
 
 namespace Infrastructure.Repositories
 {
-    public interface IDevAppRepository
-    {
-        Task<bool> Add(DevApp param);
-        Task<bool> Edit(DevApp param);
-        Task<bool> Delete(long id);
-        Task<DevApp> GetById(int id);
-        Task<IEnumerable<DevApp>> GetAll();
-    }
-
     public class DevAppRepository(ICreateSqliteConnection createSqliteConnection)
         : IDevAppRepository
     {
@@ -91,7 +82,8 @@ namespace Infrastructure.Repositories
             var connection = createSqliteConnection.Execute();
 
             using var command = connection.CreateCommand();
-            command.CommandText = $"SELECT * FROM {tableName} LIMIT 1";
+            command.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
+            command.Parameters.AddWithValue("@id", id);
             using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {

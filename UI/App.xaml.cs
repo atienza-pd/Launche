@@ -1,8 +1,16 @@
-﻿using ApplicationCore;
-using ApplicationCore.Common;
+﻿using ApplicationCore.Common;
+using ApplicationCore.Features.DevApps;
+using ApplicationCore.Features.Git;
+using ApplicationCore.Features.Groups;
+using ApplicationCore.Features.Projects;
+using Infrastructure;
+using Infrastructure.Database;
+using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using UI.DevApps;
+using UI.Features;
+using UI.Features.Projects;
 using UI.MainWindows;
 
 namespace UI
@@ -18,9 +26,9 @@ namespace UI
             var serviceProvider = GetCurrentServiceProvider();
             var mainWindow = serviceProvider.GetService<MainWindow>();
             var notificationService = serviceProvider.GetService<INotificationMessageService>();
-            var startup = serviceProvider.GetService<IStartup>();
+            var migration = serviceProvider.GetService<IInitializedDatabaseMigration>();
             notificationService!.Notify += NotificationService_Notify;
-            await startup!.Init();
+            await migration!.Execute();
             mainWindow?.Show();
         }
 
@@ -55,11 +63,33 @@ namespace UI
             var services = new ServiceCollection();
 
             return services
-                .AddApplicationCoreServiceCollection()
                 .AddSingleton<MainWindow>()
                 .AddTransient<DevAppsWindow>()
+                .AddTransient<ProjectsWindow>()
                 .AddTransient<DevAppsWindowViewModel>()
-                .AddSingleton<IDevAppsSubscriptionService, DevAppsSubscriptionService>()
+                .AddTransient<ProjectsWindowViewModel>()
+                .AddTransient<MainWindowViewModel>()
+                .AddSingleton<IInitializedDatabaseMigration, InitializedDatabaseMigration>()
+
+                .AddSingleton<INotificationMessageService, NotificationMessageService>()
+
+                .AddSingleton<IDevAppsEventsService, DevAppsEventsService>()
+                .AddSingleton<IProjectWindowEventsService, ProjectWindowEventsService>()
+                .AddSingleton<IAddTableSchemaVersion, AddTableSchemaVersion>()
+                .AddSingleton<ICheckVersionIfExists, CheckVersionIfExists>()
+                .AddSingleton<ICheckVersionTableIfExists, CheckVersionTableIfExists>()
+                .AddSingleton<ICreateSqliteConnection, CreateSqliteConnection>()
+                .AddSingleton<ICreateVersionsDbTable, CreateVersionsDbTable>()
+                .AddSingleton<IInitializedDatabaseMigration, InitializedDatabaseMigration>()
+                .AddSingleton<IGitRepository, GitRepository>()
+                .AddSingleton<IGroupRepository, GroupRepository>()
+                .AddSingleton<IDevAppRepository, DevAppRepository>()
+                .AddSingleton<IProjectRepository, ProjectRepository>()
+                .AddSingleton<IProjectService, ProjectService>()
+                .AddSingleton<IDevAppService, DevAppService>()
+                .AddSingleton<IGitService, GitService>()
+                .AddSingleton<IGroupService, GroupService>()
+
                 .BuildServiceProvider();
         }
     }

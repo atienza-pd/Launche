@@ -1,20 +1,9 @@
-﻿using System.Data.SQLite;
+﻿using ApplicationCore.Features.Projects;
 using Infrastructure.Database;
-using Infrastructure.Models;
+using System.Data.SQLite;
 
-namespace ApplicationCore.Features.Projects;
+namespace Infrastructure.Repositories;
 
-public interface IProjectRepository
-{
-    Task<Project> GetLast();
-    Task<Project> GetOne(long id);
-    Task<IEnumerable<Project>> GetAll();
-    Task<bool> Add(Project param);
-    Task<bool> Edit(Project param);
-    Task<bool> Delete(long id);
-    Task<bool> SortUp(int sortId);
-    Task<bool> SortDown(int sortId);
-}
 
 public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) : IProjectRepository
 {
@@ -178,6 +167,7 @@ public class ProjectRepository(ICreateSqliteConnection createSqliteConnection) :
             projectPath.IDEPathId = idePathId;
             projectPath.Filename = filename;
             projectPath.GroupId = isGroupId ? groupId : null;
+            projectPath.SortId = int.Parse(reader[nameof(Project.SortId)]?.ToString() ?? "0");
         }
 
         return projectPath;

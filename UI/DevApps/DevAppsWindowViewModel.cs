@@ -2,22 +2,11 @@
 using ApplicationCore.Features.DevApps;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using UI.Shared;
 
 namespace UI.DevApps;
-
-public class ViewModelBase : INotifyPropertyChanged
-{
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-}
 
 public class DevAppsWindowViewModel : ViewModelBase
 {
@@ -76,42 +65,29 @@ public class DevAppsWindowViewModel : ViewModelBase
     private DevAppViewModel? _devApp = new();
 
     private ObservableCollection<DevAppViewModel> devApps = [];
-    private readonly IEditDevAppService editDevAppService;
-    private readonly IDeleteDevAppService deleteDevAppService;
-    private readonly IGetAllDevAppService getAllDevAppService;
-    private readonly IAddDevAppService addDevAppService;
-    private readonly IGetOneDevAppService getOneDevAppService;
+    private readonly IDevAppService devAppService;
     private readonly INotificationMessageService notificationMessageService;
-    private readonly IDevAppsSubscriptionService devAppsSubscriptionService;
+    private readonly IDevAppsEventsService devAppsEventsService;
 
-    public DevAppsWindowViewModel(IAddDevAppService devAppService,
-        IEditDevAppService editDevAppService,
-        IDeleteDevAppService deleteDevAppService,
-        IGetAllDevAppService getAllDevAppService,
-        IAddDevAppService addDevAppService,
-        IGetOneDevAppService getOneDevAppService,
+    public DevAppsWindowViewModel(
+        IDevAppService devAppService,
         INotificationMessageService notificationMessageService,
-        IDevAppsSubscriptionService devAppsSubscriptionService
+        IDevAppsEventsService devAppsEventsService
     )
     {
         DeleteCommand = new RelayCommand(param => DeleteItem((DevAppViewModel)param!));
         SaveCommand = new RelayCommand(SaveDevAppsAsync);
         AddNewCommand = new RelayCommand(AddNew);
         OpenDialogCommand = new RelayCommand(OpenDialog);
-
-        this.editDevAppService = editDevAppService;
-        this.deleteDevAppService = deleteDevAppService;
-        this.getAllDevAppService = getAllDevAppService;
-        this.addDevAppService = addDevAppService;
-        this.getOneDevAppService = getOneDevAppService;
+        this.devAppService = devAppService;
         this.notificationMessageService = notificationMessageService;
-        this.devAppsSubscriptionService = devAppsSubscriptionService;
+        this.devAppsEventsService = devAppsEventsService;
     }
 
     private async void SearchDevApps(string search)
     {
-        var result = await getAllDevAppService.HandleAsync();
-        this.DevApps = [.. result.DevApps.Where(x => x.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
+        var result = await devAppService.GetAll();
+        this.DevApps = [.. result.Where(x => x.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
     }
 
     private void OpenDialog()
@@ -135,9 +111,9 @@ public class DevAppsWindowViewModel : ViewModelBase
 
     public async Task LoadDevAppsAsync()
     {
-        var getAllDevAppServiceQuery = await getAllDevAppService.HandleAsync();
+        var devApps = await devAppService.GetAll();
 
-        DevApps = [.. getAllDevAppServiceQuery.DevApps];
+        DevApps = [.. devApps];
     }
 
     private async void SaveDevAppsAsync()
@@ -173,7 +149,7 @@ public class DevAppsWindowViewModel : ViewModelBase
 
             if (this.DevApp.Id == 0)
             {
-                await this.addDevAppService.HandleAsync(new AddDevAppCommand
+                await this.devAppService.Add(new()
                 {
                     Name = this.DevApp.Name,
                     Path = this.DevApp.Path
@@ -183,7 +159,7 @@ public class DevAppsWindowViewModel : ViewModelBase
             }
             else
             {
-                await this.editDevAppService.HandleAsync(new EditDevAppCommand
+                await this.devAppService.Edit(new()
                 {
                     Name = this.DevApp.Name,
                     Path = this.DevApp.Path,
@@ -193,11 +169,11 @@ public class DevAppsWindowViewModel : ViewModelBase
                 Visibility = Visibility.Visible;
             }
 
-            this.devAppsSubscriptionService.Create();
+            this.devAppsEventsService.DevAppsChanged();
             int id = this.DevApp.Id;
 
-            var result = await getAllDevAppService.HandleAsync();
-            this.DevApps = [.. result.DevApps.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
+            var result = await devAppService.GetAll();
+            this.DevApps = [.. result.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
 
             this.DevApp = DevApps.FirstOrDefault(x => x.Id == id) ?? new();
 
@@ -220,16 +196,13 @@ public class DevAppsWindowViewModel : ViewModelBase
             if (item != null)
             {
 
-                var result = await this.deleteDevAppService.HandleAsync(new DeleteDevAppCommand
-                {
-                    Id = item.Id
-                });
+                var result = await this.devAppService.Delete(item.Id);
 
                 if (result)
                 {
                     DevApps.Remove(item);
                     DevApp = new();
-                    devAppsSubscriptionService.Create();
+                    devAppsEventsService.DevAppsChanged();
                 }
             }
         }
@@ -240,7 +213,6 @@ public class DevAppsWindowViewModel : ViewModelBase
                     "Delete Dev App",
                     NotificationType.Error);
         }
-
     }
 
 }

@@ -1,17 +1,8 @@
-﻿using System.Data.SQLite;
+﻿using ApplicationCore.Features.Groups;
 using Infrastructure.Database;
-using Infrastructure.Models;
+using System.Data.SQLite;
 
 namespace Infrastructure.Repositories;
-
-public interface IGroupRepository
-{
-    Task<Group> GetOne(long id);
-    Task<IEnumerable<Group>> GetAll();
-    Task<bool> Add(Group param);
-    Task<bool> Edit(Group param);
-    Task<bool> Delete(long id);
-}
 
 public class GroupRepository(ICreateSqliteConnection createSqliteConnection) : IGroupRepository
 {
