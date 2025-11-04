@@ -1,0 +1,104 @@
+<#
+.SYNOPSIS
+    Compress all contents of the publish directory into a user-specified zip file.
+.DESCRIPTION
+    Prompts for a zip file name (without path). Creates the zip inside the scripts folder by default
+    unless an absolute path is provided. Validates input and offers overwrite if target exists.
+    Source directory: User must set $PublishDir variable.
+.NOTES
+    Requires PowerShell 5+.
+#>
+
+$ErrorActionPreference = 'Stop'
+
+# Configuration
+$PublishDir = '' # Replace with your actual path
+$DefaultOutputDir = Split-Path -Parent $MyInvocation.MyCommand.Path  # scripts folder
+
+function Prompt-ZipName {
+    param(
+        [string]$DefaultDir,
+        [string]$Extension = '.zip'
+    )
+    while ($true) {
+        $inputName = Read-Host "Enter zip file name (or full path). Extension optional"
+        if ([string]::IsNullOrWhiteSpace($inputName)) {
+            Write-Warning 'Filename cannot be empty.'
+            continue
+        }
+        # Append extension if missing
+        if (-not $inputName.EndsWith($Extension, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $inputName += $Extension
+        }
+        $fullPath = if ([System.IO.Path]::IsPathRooted($inputName)) { $inputName } else { Join-Path $DefaultDir $inputName }
+        # Basic invalid char check
+        $fileNameOnly = Split-Path -Leaf $fullPath
+        if ($fileNameOnly.IndexOfAny([System.IO.Path]::GetInvalidFileNameChars()) -ge 0) {
+            Write-Warning 'Filename contains invalid characters. Try again.'
+            continue
+        }
+        return $fullPath
+    }
+}
+
+function Confirm-Overwrite {
+    param([string]$Path)
+    if (-not (Test-Path $Path)) { return $true }
+    while ($true) {
+        $resp = Read-Host "File '$Path' exists. Overwrite? (y/n)"
+        switch ($resp.ToLower()) {
+            'y' { return $true }
+            'n' { return $false }
+            default { Write-Host 'Please answer y or n.' }
+        }
+    }
+}
+
+function Compress-PublishDirectory {
+    param(
+        [string]$SourceDir,
+        [string]$ZipPath
+    )
+    if (-not (Test-Path $SourceDir)) {
+        throw "Publish directory not found: $SourceDir"
+    }
+
+    # Ensure no trailing separator issues
+    $resolvedSource = (Resolve-Path $SourceDir).Path
+
+    # Remove existing zip if overwriting
+    if (Test-Path $ZipPath) {
+        Remove-Item $ZipPath -Force
+    }
+
+    # We want the contents only, so gather child items
+    $items = Get-ChildItem -LiteralPath $resolvedSource
+    if (-not $items) {
+        throw 'Publish directory is empty; nothing to compress.'
+    }
+
+    Write-Host "Compressing contents of '$resolvedSource' to '$ZipPath'..." -ForegroundColor Cyan
+    # Compress-Archive cannot take multiple paths unless we pass them in Path parameter as array.
+    Compress-Archive -Path $items.FullName -DestinationPath $ZipPath -Force
+    Write-Host 'Done.' -ForegroundColor Green
+}
+
+try {
+    Write-Host 'Publish Folder Compression Utility' -ForegroundColor Yellow
+    Write-Host "Source directory: $PublishDir" -ForegroundColor DarkGray
+
+    $zipPath = Prompt-ZipName -DefaultDir $DefaultOutputDir
+
+    if (-not (Confirm-Overwrite -Path $zipPath)) {
+        Write-Host 'Operation cancelled by user.' -ForegroundColor Yellow
+        exit 0
+    }
+
+    Compress-PublishDirectory -SourceDir $PublishDir -ZipPath $zipPath
+    Write-Host "Created zip: $zipPath" -ForegroundColor Green
+    exit 0
+}
+catch {
+    Write-Error $_.Exception.Message
+    exit 1
+}
