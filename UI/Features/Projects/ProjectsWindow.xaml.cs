@@ -5,10 +5,15 @@ using UI.Features.Projects;
 
 namespace UI.Features
 {
+    public interface IProjectsWindow
+    {
+        bool? ShowDialog();
+    }
+
     /// <summary>
     /// Interaction logic for ProjectsWindow.xaml
     /// </summary>
-    public partial class ProjectsWindow : Window
+    public partial class ProjectsWindow : Window, IProjectsWindow
     {
         private readonly ProjectsWindowViewModel viewModel;
 
@@ -42,6 +47,7 @@ namespace UI.Features
         {
             viewModel.LoadProjects();
             viewModel.LoadDevApps();
+            this.viewModel.SetSelectedProject();
         }
 
         private void ComboBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

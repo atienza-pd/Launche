@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using UI.Shared;
+using UI.Shared.Services;
 
 namespace UI.Features.Projects;
 
@@ -91,13 +92,15 @@ public class ProjectsWindowViewModel : ViewModelBase
     private readonly INotificationMessageService notificationMessageService;
     private readonly IProjectWindowEventsService projectWindowEventsService;
     private readonly IDevAppService devAppService;
+    private readonly ISelectedProjectService selectedProjectService;
     private ObservableCollection<DevAppViewModel> devApps;
     private DevAppViewModel? devApp;
 
     public ProjectsWindowViewModel(IProjectService projectService,
         INotificationMessageService notificationMessageService,
         IProjectWindowEventsService projectWindowEventsService,
-        IDevAppService devAppService
+        IDevAppService devAppService,
+        ISelectedProjectService selectedProjectService
         )
     {
         DeleteCommand = new RelayCommand(param => DeleteItem((ProjectViewModel)param!));
@@ -108,6 +111,7 @@ public class ProjectsWindowViewModel : ViewModelBase
         this.notificationMessageService = notificationMessageService;
         this.projectWindowEventsService = projectWindowEventsService;
         this.devAppService = devAppService;
+        this.selectedProjectService = selectedProjectService;
     }
 
     private void OpenDialog()
@@ -271,5 +275,17 @@ public class ProjectsWindowViewModel : ViewModelBase
     public async void LoadDevApps()
     {
         this.DevApps = [.. await devAppService.GetAll()];
+    }
+
+    public void SetSelectedProject()
+    {
+        var selecteProject = this.selectedProjectService.GetSelectedProject();
+
+        if (selecteProject is null)
+        {
+            return;
+        }
+
+        this.Project = selecteProject;
     }
 }
