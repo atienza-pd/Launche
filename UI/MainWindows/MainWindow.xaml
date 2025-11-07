@@ -198,9 +198,9 @@
                 </Style>
                 <ContextMenu x:Key="ItemContextMenu">
                     <MenuItem
-                        x:Name="mnuAddToGroup"
-                        Header="Add to Group"
-                        IsEnabled="{Binding EnableAddToGroup}" />
+                        x:Name="mnuEdit"
+                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Header="Edit" />
                     <MenuItem
                         x:Name="mnuMoveUp"
                        Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=Window}}"

@@ -12,6 +12,7 @@ using UI.DevApps;
 using UI.Features;
 using UI.Features.Projects;
 using UI.MainWindows;
+using UI.Shared.Services;
 
 namespace UI
 {
@@ -65,7 +66,7 @@ namespace UI
             return services
                 .AddSingleton<MainWindow>()
                 .AddTransient<DevAppsWindow>()
-                .AddTransient<ProjectsWindow>()
+                .AddTransient<IProjectsWindow, ProjectsWindow>()
                 .AddTransient<DevAppsWindowViewModel>()
                 .AddTransient<ProjectsWindowViewModel>()
                 .AddTransient<MainWindowViewModel>()
@@ -90,6 +91,7 @@ namespace UI
                 .AddSingleton<IGitService, GitService>()
                 .AddSingleton<IGroupService, GroupService>()
 
+                .AddSingleton<ISelectedProjectService, SelectedProjectService>()
                 .BuildServiceProvider();
         }
     }

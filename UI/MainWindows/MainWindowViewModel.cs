@@ -8,6 +8,7 @@ using System.IO;
 using System.Windows.Input;
 using UI.Features;
 using UI.Shared;
+using UI.Shared.Services;
 
 namespace UI.MainWindows
 {
@@ -19,6 +20,7 @@ namespace UI.MainWindows
         public ICommand OpenFolderWindowCommand { get; }
         public ICommand SearchEnterCommand { get; }
         public ICommand SearchDownCommand { get; }
+        public ICommand EditCommand { get; }
         public RelayCommand OpenDevAppsWindowCommand { get; }
         public RelayCommand OpenProjectsWindowCommand { get; }
 
@@ -28,6 +30,7 @@ namespace UI.MainWindows
         private readonly IProjectService projectService;
         private readonly INotificationMessageService notificationMessageService;
         private readonly IServiceProvider serviceProvider;
+        private readonly ISelectedProjectService selectedProjectService;
         private ObservableCollection<ProjectViewModel> _projects;
         private string _search;
         private ProjectViewModel project;
@@ -67,7 +70,12 @@ namespace UI.MainWindows
             }
         }
 
-        public MainWindowViewModel(IProjectService projectService, INotificationMessageService notificationMessageService, IServiceProvider serviceProvider)
+        public MainWindowViewModel(
+            IProjectService projectService, 
+            INotificationMessageService notificationMessageService, 
+            IServiceProvider serviceProvider,
+            ISelectedProjectService selectedProjectService
+        )
         {
             // initialize non-nullable fields
             _projects = [];
@@ -77,6 +85,7 @@ namespace UI.MainWindows
             this.projectService = projectService;
             this.notificationMessageService = notificationMessageService;
             this.serviceProvider = serviceProvider;
+            this.selectedProjectService = selectedProjectService;
             this.MoveUpCommand = new RelayCommand(MoveUpAsync);
             this.MoveDownCommand = new RelayCommand(MoveDownAsync);
             this.ListItemClickCommand = new RelayCommand(OnListItemClick);
@@ -85,12 +94,30 @@ namespace UI.MainWindows
             this.SearchDownCommand = new RelayCommand(OnSearchDown);
             this.OpenDevAppsWindowCommand = new RelayCommand(OpenDevAppWindow);
             this.OpenProjectsWindowCommand = new RelayCommand(OpenProjectsWindow);
+            this.EditCommand = new RelayCommand(EditProject);
+        }
+
+        // Made virtual so tests can override and avoid opening a real dialog
+        protected virtual void ShowProjectsWindow(IProjectsWindow window)
+        {
+            window.ShowDialog();
+        }
+
+        private void EditProject()
+        {
+            // Resolve the projects window via DI using the interface so tests can provide a mock
+            var mainWindow = serviceProvider.GetService<IProjectsWindow>();
+            this.selectedProjectService.SetSelectedProject(this.SelectedProject!);
+            if (mainWindow is not null)
+            {
+                ShowProjectsWindow(mainWindow);
+            }
         }
 
         private void OpenProjectsWindow()
         {
-            var mainWindow = serviceProvider.GetService<ProjectsWindow>();
-
+            var mainWindow = serviceProvider.GetService<IProjectsWindow>() as ProjectsWindow;
+            
             mainWindow!.ShowDialog();
         }
 
