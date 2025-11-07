@@ -242,7 +242,7 @@ namespace UI.MainWindows
                 new()
                 {
                     FileName = devAppPath,
-                    Arguments = $"{fullFilePath}",
+                    Arguments = $"\"{fullFilePath}\"",
                     UseShellExecute = true,
                 }
             );
@@ -280,7 +280,7 @@ namespace UI.MainWindows
 
         public void LoadProjects()
         {
-            SearchProjects("");
+            SearchProjects(this.Search);
         }
     }
 }
