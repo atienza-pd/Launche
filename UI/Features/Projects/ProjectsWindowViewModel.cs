@@ -14,6 +14,9 @@ namespace UI.Features.Projects;
 
 public class ProjectsWindowViewModel : ViewModelBase
 {
+
+    public event EventHandler? CloseWindowEvent;
+
     public ICommand DeleteCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand AddNewCommand { get; }
@@ -83,6 +86,16 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
     }
 
+    public Visibility DeleteButtonVisibility
+    {
+        get { return deleteButtonVisibility; }
+        set
+        {
+            deleteButtonVisibility = value;
+            OnPropertyChanged(nameof(this.DeleteButtonVisibility));
+        }
+    }
+
 
     private string _search;
     private ObservableCollection<ProjectViewModel> projects;
@@ -95,6 +108,7 @@ public class ProjectsWindowViewModel : ViewModelBase
     private readonly ISelectedProjectService selectedProjectService;
     private ObservableCollection<DevAppViewModel> devApps;
     private DevAppViewModel? devApp;
+    private Visibility deleteButtonVisibility;
 
     public ProjectsWindowViewModel(IProjectService projectService,
         INotificationMessageService notificationMessageService,
@@ -127,7 +141,7 @@ public class ProjectsWindowViewModel : ViewModelBase
         string filePath = openFolderDialog.FolderName;
         string name = string.IsNullOrEmpty(Project!.Name) ? openFolderDialog.SafeFolderName : Project.Name;
 
-        Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name!, IDEPathId = SelectedDevApp!.Id };
+        Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name!, IDEPathId = SelectedDevApp?.Id };
     }
 
     private void AddNew()
@@ -234,22 +248,14 @@ public class ProjectsWindowViewModel : ViewModelBase
                 return;
             }
 
-            if (item is null)
-            {
-                this.notificationMessageService.Create("No selected Project to be deleted!",
-                   "Delete Project",
-                   NotificationType.Error);
-
-                return;
-            }
-
-            var result = await this.projectService.Delete(id: item.Id);
+            var result = await this.projectService.Delete(id: project!.Id);
 
             if (result)
             {
                 Projects.Remove(item);
                 Project = new();
                 projectWindowEventsService.ProjectsChanged();
+                this.CloseWindowEvent?.Invoke(this, EventArgs.Empty);
             }
         }
         catch (Exception ex)
@@ -281,11 +287,13 @@ public class ProjectsWindowViewModel : ViewModelBase
     {
         var selecteProject = this.selectedProjectService.GetSelectedProject();
 
-        if (selecteProject is null)
+        if (selecteProject.Id is 0)
         {
+            DeleteButtonVisibility = Visibility.Hidden;
             return;
         }
 
+        DeleteButtonVisibility = Visibility.Visible;
         this.Project = selecteProject;
     }
 }

@@ -48,6 +48,7 @@ namespace UI.Features
             viewModel.LoadProjects();
             viewModel.LoadDevApps();
             this.viewModel.SetSelectedProject();
+            viewModel.CloseWindowEvent += (s, args) => this.Close();
         }
 
         private void ComboBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
