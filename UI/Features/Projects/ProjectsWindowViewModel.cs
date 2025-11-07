@@ -1,12 +1,10 @@
-﻿
-
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 using ApplicationCore.Common;
 using ApplicationCore.Features.DevApps;
 using ApplicationCore.Features.Projects;
 using Microsoft.Win32;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 using UI.Shared;
 using UI.Shared.Services;
 
@@ -14,23 +12,12 @@ namespace UI.Features.Projects;
 
 public class ProjectsWindowViewModel : ViewModelBase
 {
-
     public event EventHandler? CloseWindowEvent;
 
     public ICommand DeleteCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand AddNewCommand { get; }
     public ICommand OpenDialogCommand { get; }
-
-    public ObservableCollection<ProjectViewModel> Projects
-    {
-        get { return projects; }
-        set
-        {
-            projects = value;
-            OnPropertyChanged(nameof(this.Projects));
-        }
-    }
 
     public ObservableCollection<DevAppViewModel> DevApps
     {
@@ -65,17 +52,6 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
     }
 
-    public string Search
-    {
-        get { return _search; }
-        set
-        {
-            _search = value;
-            OnPropertyChanged(nameof(this.Search));
-            SearchProjects(_search);
-        }
-    }
-
     public Visibility SaveNotificationVisibility
     {
         get { return saveNotificationVisibility; }
@@ -96,9 +72,6 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
     }
 
-
-    private string _search;
-    private ObservableCollection<ProjectViewModel> projects;
     private ProjectViewModel? project = new();
     private Visibility saveNotificationVisibility = Visibility.Hidden;
     private readonly IProjectService projectService;
@@ -106,18 +79,19 @@ public class ProjectsWindowViewModel : ViewModelBase
     private readonly IProjectWindowEventsService projectWindowEventsService;
     private readonly IDevAppService devAppService;
     private readonly ISelectedProjectService selectedProjectService;
-    private ObservableCollection<DevAppViewModel> devApps;
+    private ObservableCollection<DevAppViewModel> devApps = [];
     private DevAppViewModel? devApp;
     private Visibility deleteButtonVisibility;
 
-    public ProjectsWindowViewModel(IProjectService projectService,
+    public ProjectsWindowViewModel(
+        IProjectService projectService,
         INotificationMessageService notificationMessageService,
         IProjectWindowEventsService projectWindowEventsService,
         IDevAppService devAppService,
         ISelectedProjectService selectedProjectService
-        )
+    )
     {
-        DeleteCommand = new RelayCommand(param => DeleteItem((ProjectViewModel)param!));
+        DeleteCommand = new RelayCommand(DeleteItem);
         SaveCommand = new RelayCommand(SaveAsync);
         AddNewCommand = new RelayCommand(AddNew);
         OpenDialogCommand = new RelayCommand(OpenDialog);
@@ -139,14 +113,21 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
 
         string filePath = openFolderDialog.FolderName;
-        string name = string.IsNullOrEmpty(Project!.Name) ? openFolderDialog.SafeFolderName : Project.Name;
+        string name = string.IsNullOrEmpty(Project!.Name)
+            ? openFolderDialog.SafeFolderName
+            : Project.Name;
 
-        Project = new() { Id = Project?.Id ?? 0, Path = filePath, Name = name!, IDEPathId = SelectedDevApp?.Id };
+        Project = new()
+        {
+            Id = Project?.Id ?? 0,
+            Path = filePath,
+            Name = name!,
+            IDEPathId = SelectedDevApp?.Id,
+        };
     }
 
     private void AddNew()
     {
-        SearchProjects("");
         this.Project = new();
     }
 
@@ -161,36 +142,46 @@ public class ProjectsWindowViewModel : ViewModelBase
 
             if (this.Project!.Id == 0)
             {
-                await this.projectService.Add(new() { Name = Project.Name, Path = Project.Path, IDEPathId = SelectedDevApp!.Id, Filename = Project.Filename });
+                await this.projectService.Add(
+                    new()
+                    {
+                        Name = Project.Name,
+                        Path = Project.Path,
+                        IDEPathId = SelectedDevApp!.Id,
+                        Filename = Project.Filename,
+                    }
+                );
 
                 SaveNotificationVisibility = Visibility.Visible;
             }
             else
             {
-                await this.projectService.Edit(new()
-                {
-                    Id = Project.Id,
-                    Name = Project.Name,
-                    Path = Project.Path,
-                    IDEPathId = SelectedDevApp!.Id,
-                    Filename = Project.Filename
-                }
-                    );
+                await this.projectService.Edit(
+                    new()
+                    {
+                        Id = Project.Id,
+                        Name = Project.Name,
+                        Path = Project.Path,
+                        IDEPathId = SelectedDevApp!.Id,
+                        Filename = Project.Filename,
+                    }
+                );
 
                 SaveNotificationVisibility = Visibility.Visible;
             }
 
+            var projects = await projectService.GetAll();
+            this.Project = projects.Projects.FirstOrDefault(p => p.Name == Project.Name);
+
+            if (this.Project != null)
+            {
+                this.DeleteButtonVisibility = Visibility.Visible;
+            }
+
             this.projectWindowEventsService.ProjectsChanged();
-            long id = this.Project.Id;
-
-            var result = await projectService.GetAll();
-            this.Projects = [.. result.Projects.Where(x => x.Name.Contains(Search ?? "", StringComparison.CurrentCultureIgnoreCase))];
-
-            this.Project = Projects.FirstOrDefault(x => x.Id == id) ?? new();
 
             await Task.Delay(3000);
             SaveNotificationVisibility = Visibility.Hidden;
-
         }
         catch (Exception ex)
         {
@@ -200,34 +191,39 @@ public class ProjectsWindowViewModel : ViewModelBase
                 NotificationType.Error
             );
         }
-
     }
 
     private bool ValidateFields()
     {
         if (Project == null)
         {
-            this.notificationMessageService.Create("Invalid Project data.",
+            this.notificationMessageService.Create(
+                "Invalid Project data.",
                 "Save Project",
-                NotificationType.Error);
+                NotificationType.Error
+            );
 
             return false;
         }
 
         if (String.IsNullOrEmpty(Project.Name) || String.IsNullOrWhiteSpace(Project.Name))
         {
-            this.notificationMessageService.Create("Name is required!",
+            this.notificationMessageService.Create(
+                "Name is required!",
                 "Save Project",
-                NotificationType.Error);
+                NotificationType.Error
+            );
 
             return false;
         }
 
         if (String.IsNullOrEmpty(Project.Path) || String.IsNullOrWhiteSpace(Project.Path))
         {
-            this.notificationMessageService.Create("Path is required!",
+            this.notificationMessageService.Create(
+                "Path is required!",
                 "Save Project",
-                NotificationType.Error);
+                NotificationType.Error
+            );
 
             return false;
         }
@@ -235,15 +231,19 @@ public class ProjectsWindowViewModel : ViewModelBase
         return true;
     }
 
-    private async void DeleteItem(ProjectViewModel item)
+    private async void DeleteItem()
     {
         try
         {
-            if (Projects.Count == 1)
+            var projects = await projectService.GetAll();
+
+            if (projects.Count == 1)
             {
-                this.notificationMessageService.Create("Single project should exists!",
-                   "Delete Project",
-                   NotificationType.Error);
+                this.notificationMessageService.Create(
+                    "Single project should exists!",
+                    "Delete Project",
+                    NotificationType.Error
+                );
 
                 return;
             }
@@ -252,7 +252,6 @@ public class ProjectsWindowViewModel : ViewModelBase
 
             if (result)
             {
-                Projects.Remove(item);
                 Project = new();
                 projectWindowEventsService.ProjectsChanged();
                 this.CloseWindowEvent?.Invoke(this, EventArgs.Empty);
@@ -260,25 +259,15 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-
-            this.notificationMessageService.Create(ex.Message,
-                    "Delete Project",
-                    NotificationType.Error);
+            this.notificationMessageService.Create(
+                ex.Message,
+                "Delete Project",
+                NotificationType.Error
+            );
         }
     }
 
-    private async void SearchProjects(string search)
-    {
-        var result = await projectService.GetAll();
-        this.Projects = [.. result.Projects.Where(x => x.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
-    }
-
-    public void LoadProjects()
-    {
-        this.SearchProjects("");
-    }
-
-    public async void LoadDevApps()
+    public async Task LoadDevApps()
     {
         this.DevApps = [.. await devAppService.GetAll()];
     }
@@ -287,7 +276,7 @@ public class ProjectsWindowViewModel : ViewModelBase
     {
         var selecteProject = this.selectedProjectService.GetSelectedProject();
 
-        if (selecteProject.Id is 0)
+        if (selecteProject is null || selecteProject?.Id is 0)
         {
             DeleteButtonVisibility = Visibility.Hidden;
             return;

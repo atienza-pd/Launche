@@ -45,7 +45,6 @@ namespace UI.Features
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            viewModel.LoadProjects();
             viewModel.LoadDevApps();
             this.viewModel.SetSelectedProject();
             viewModel.CloseWindowEvent += (s, args) => this.Close();
