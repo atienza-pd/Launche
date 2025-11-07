@@ -16,71 +16,9 @@
     <Grid Margin="10,10,10,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Label
-                Grid.Row="0"
-                Grid.ColumnSpan="3"
-                Content="Search" />
-            <Grid Grid.Row="1" VerticalAlignment="Top">
-                <TextBox
-                    Padding="3,3,20,3"
-                    VerticalAlignment="Center"
-                    Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
-                <Image
-                    Width="16"
-                    Height="16"
-                    Margin="0,0,5,0"
-                    HorizontalAlignment="Right"
-                    Source="/Resources/search.png" />
-            </Grid>
-            <Grid Grid.Row="2">
-                <ListView
-                    ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Project, UpdateSourceTrigger=PropertyChanged}"
-                    SizeChanged="ListView_SizeChanged">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Name">
-                                <GridViewColumn.HeaderContainerStyle>
-                                    <Style TargetType="GridViewColumnHeader">
-                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                    </Style>
-                                </GridViewColumn.HeaderContainerStyle>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button
-                                            HorizontalAlignment="Center"
-                                            Background="Transparent"
-                                            BorderBrush="Transparent"
-                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}">
-                                            <Button.Content>
-                                                <Image
-                                                    Grid.Row="7"
-                                                    Width="16"
-                                                    Height="16"
-                                                    Source="/Resources/trash-can-alt-1-red.png"
-                                                    ToolTip="Delete" />
-                                            </Button.Content>
-                                        </Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
-        </Grid>
-        <Grid Grid.Column="1" Margin="10,0,0,10">
+       
+        <Grid Grid.Column="0" Margin="10,0,0,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="28px" />
                 <RowDefinition Height="28px" />
