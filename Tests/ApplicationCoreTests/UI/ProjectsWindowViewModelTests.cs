@@ -49,13 +49,13 @@ namespace ApplicationCoreTests.UI
                 IDEPathId = 5,
                 Filename = "test.sln"
             };
-
             var vm = CreateSut(project,
-                out var selectedProjectService,
-                out var projectService,
-                out var notificationService,
-                out var windowEventsService,
-                out var devAppService);
+                out _,
+                out _,
+                out var _,
+                out var _,
+                out var _
+                );
 
             // Provide matching DevApp so SelectedDevApp can be set in Project setter
             vm.DevApps = new ObservableCollection<DevAppViewModel>
@@ -79,10 +79,10 @@ namespace ApplicationCoreTests.UI
             var initial = new ProjectViewModel { Id = 1, Name = "Initial", Path = "c:/init" }; // existing state
             var vm = CreateSut(null!,
                 out var selectedProjectService,
-                out var projectService,
-                out var notificationService,
-                out var windowEventsService,
-                out var devAppService);
+                out var _,
+                out var _,
+                out var _,
+                out var _);
 
             // Seed current project
             vm.Project = initial;
