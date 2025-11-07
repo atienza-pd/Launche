@@ -74,6 +74,7 @@ public partial class MainWindow : Window
 
     public void SelectNewlyAddedItem()
     {
+
         lvProjectPaths.SelectedItem = lvProjectPaths.Items[^1];
         lvProjectPaths.ScrollIntoView(this.lvProjectPaths.SelectedItem);
     }
