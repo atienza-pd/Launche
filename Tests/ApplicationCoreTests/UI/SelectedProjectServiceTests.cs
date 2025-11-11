@@ -30,7 +30,7 @@ namespace ApplicationCoreTests.UI
                 Path = "c:/example",
                 IDEPathId = 7,
                 Filename = "example.sln",
-                DevAppName = "VS"
+                DevAppName = "VS",
             };
 
             sut.SetSelectedProject(project);
@@ -48,7 +48,12 @@ namespace ApplicationCoreTests.UI
         public void MutatingReturnedProject_AffectsStoredProject()
         {
             var sut = new SelectedProjectService();
-            var project = new ProjectViewModel { Id = 1, Name = "Initial", Path = "c:/init" };
+            var project = new ProjectViewModel
+            {
+                Id = 1,
+                Name = "Initial",
+                Path = "c:/init",
+            };
             sut.SetSelectedProject(project);
 
             // mutate after setting
@@ -58,6 +63,26 @@ namespace ApplicationCoreTests.UI
             var result = sut.GetSelectedProject();
             Assert.Equal("Changed", result.Name);
             Assert.Equal("d:/changed", result.Path);
+        }
+
+        [Fact]
+        public void Reset_SelectedProject()
+        {
+            var sut = new SelectedProjectService();
+            var project = new ProjectViewModel
+            {
+                Id = 1,
+                Name = "Initial",
+                Path = "c:/init",
+            };
+            sut.SetSelectedProject(project);
+
+            sut.Reset();
+
+            var result = sut.GetSelectedProject();
+            Assert.Equal(0, result.Id);
+            Assert.Equal(string.Empty, result.Name);
+            Assert.Equal(string.Empty, result.Path);
         }
     }
 }

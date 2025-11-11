@@ -160,6 +160,53 @@ namespace ApplicationCoreTests.UI
             vm.Project = new ProjectViewModel
             {
                 Id = 0,
+                Name = "New Project",
+                Path = "c:/new",
+            };
+            vm.SelectedDevApp = new DevAppViewModel
+            {
+                Id = 1,
+                Name = "VS",
+                Path = "c:/vs.exe",
+            };
+
+            sut.ProjectService.Setup(s => s.Add(It.IsAny<Project>())).ReturnsAsync(true);
+            sut.ProjectService.Setup(s => s.GetAll())
+                .ReturnsAsync(
+                    new GetAllProjectViewModel
+                    {
+                        Projects = new[]
+                        {
+                            new ProjectViewModel
+                            {
+                                Id = 7,
+                                Name = "New",
+                                Path = "c:/new",
+                                IDEPathId = 1,
+                            },
+                        },
+                    }
+                );
+
+            vm.SaveCommand.Execute(null);
+            await Task.Delay(50); // allow async void to complete
+
+            sut.ProjectService.Verify(
+                s => s.Add(It.Is<Project>(p => p.Name == "New Project")),
+                Times.Once
+            );
+            sut.WindowEventsService.Verify(s => s.ProjectsChanged(), Times.Once);
+            Assert.Equal(Visibility.Visible, vm.SaveNotificationVisibility);
+        }
+
+        [Fact]
+        public async Task SaveCommand_DuplicatedName_ShowsErrorNotification()
+        {
+            var sut = CreateSut(new ProjectViewModel());
+            var vm = sut.Vm;
+            vm.Project = new ProjectViewModel
+            {
+                Id = 0,
                 Name = "New",
                 Path = "c:/new",
             };
@@ -191,9 +238,15 @@ namespace ApplicationCoreTests.UI
             vm.SaveCommand.Execute(null);
             await Task.Delay(50); // allow async void to complete
 
-            sut.ProjectService.Verify(s => s.Add(It.Is<Project>(p => p.Name == "New")), Times.Once);
-            sut.WindowEventsService.Verify(s => s.ProjectsChanged(), Times.Once);
-            Assert.Equal(Visibility.Visible, vm.SaveNotificationVisibility);
+            sut.NotificationService.Verify(
+                n =>
+                    n.Create(
+                        It.Is<string>(msg => msg.Contains("Name already exists!")),
+                        "Save Project",
+                        NotificationType.Error
+                    ),
+                Times.AtLeastOnce
+            );
         }
 
         [Fact]
@@ -238,6 +291,46 @@ namespace ApplicationCoreTests.UI
             sut.ProjectService.Verify(s => s.Edit(It.Is<Project>(p => p.Id == 11)), Times.Once);
             sut.WindowEventsService.Verify(s => s.ProjectsChanged(), Times.Once);
             Assert.Equal(Visibility.Visible, vm.SaveNotificationVisibility);
+        }
+
+        [Fact]
+        public async Task SaveCommand_WhenValidateFieldsThrows_ShowsValidateProjectError()
+        {
+            // Arrange: cause projectService.GetAll inside ValidateFields to throw
+            var sut = CreateSut(new ProjectViewModel());
+            var vm = sut.Vm;
+            vm.Project = new ProjectViewModel
+            {
+                Id = 0,
+                Name = "Throwing",
+                Path = "c:/throw",
+            };
+            vm.SelectedDevApp = new DevAppViewModel
+            {
+                Id = 1,
+                Name = "VS",
+                Path = "c:/vs.exe",
+            };
+
+            sut.ProjectService.Setup(s => s.GetAll()).ThrowsAsync(new Exception("Boom"));
+
+            // Act
+            vm.SaveCommand.Execute(null);
+            await Task.Delay(50); // allow async void handler to run
+
+            // Assert: notification created with Validate Project title and exception message
+            sut.NotificationService.Verify(
+                n =>
+                    n.Create(
+                        It.Is<string>(msg => msg.Contains("Boom")),
+                        "Validate Project",
+                        NotificationType.Error
+                    ),
+                Times.Once
+            );
+            // Ensure add/edit were never called due to validation failure
+            sut.ProjectService.Verify(ps => ps.Add(It.IsAny<Project>()), Times.Never);
+            sut.ProjectService.Verify(ps => ps.Edit(It.IsAny<Project>()), Times.Never);
         }
 
         [Fact]

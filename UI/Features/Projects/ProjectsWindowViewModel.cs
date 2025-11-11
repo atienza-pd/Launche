@@ -135,7 +135,7 @@ public class ProjectsWindowViewModel : ViewModelBase
     {
         try
         {
-            if (!ValidateFields())
+            if (!await ValidateFields())
             {
                 return;
             }
@@ -193,42 +193,69 @@ public class ProjectsWindowViewModel : ViewModelBase
         }
     }
 
-    private bool ValidateFields()
+    private async Task<bool> ValidateFields()
     {
-        if (Project == null)
+        try
+        {
+            var result = await projectService.GetAll();
+            if (Project == null)
+            {
+                this.notificationMessageService.Create(
+                    "Invalid Project data.",
+                    "Save Project",
+                    NotificationType.Error
+                );
+
+                return false;
+            }
+
+            if (String.IsNullOrEmpty(Project.Name) || String.IsNullOrWhiteSpace(Project.Name))
+            {
+                this.notificationMessageService.Create(
+                    "Name is required!",
+                    "Save Project",
+                    NotificationType.Error
+                );
+
+                return false;
+            }
+
+            if (
+                result.Projects.FirstOrDefault(x => x.Name == Project.Name && x.Id != Project.Id)
+                != null
+            )
+            {
+                this.notificationMessageService.Create(
+                    "Name already exists!",
+                    "Save Project",
+                    NotificationType.Error
+                );
+
+                return false;
+            }
+
+            if (String.IsNullOrEmpty(Project.Path) || String.IsNullOrWhiteSpace(Project.Path))
+            {
+                this.notificationMessageService.Create(
+                    "Path is required!",
+                    "Save Project",
+                    NotificationType.Error
+                );
+
+                return false;
+            }
+
+            return true;
+        }
+        catch (Exception ex)
         {
             this.notificationMessageService.Create(
-                "Invalid Project data.",
-                "Save Project",
+                ex.Message,
+                "Validate Project",
                 NotificationType.Error
             );
-
             return false;
         }
-
-        if (String.IsNullOrEmpty(Project.Name) || String.IsNullOrWhiteSpace(Project.Name))
-        {
-            this.notificationMessageService.Create(
-                "Name is required!",
-                "Save Project",
-                NotificationType.Error
-            );
-
-            return false;
-        }
-
-        if (String.IsNullOrEmpty(Project.Path) || String.IsNullOrWhiteSpace(Project.Path))
-        {
-            this.notificationMessageService.Create(
-                "Path is required!",
-                "Save Project",
-                NotificationType.Error
-            );
-
-            return false;
-        }
-
-        return true;
     }
 
     private async void DeleteItem()
