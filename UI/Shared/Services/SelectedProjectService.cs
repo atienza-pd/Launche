@@ -10,6 +10,7 @@ namespace UI.Shared.Services
     public interface ISelectedProjectService
     {
         ProjectViewModel GetSelectedProject();
+        void Reset();
         void SetSelectedProject(ProjectViewModel project);
     }
 
@@ -20,6 +21,11 @@ namespace UI.Shared.Services
         public ProjectViewModel GetSelectedProject()
         {
             return this.selectedProject;
+        }
+
+        public void Reset()
+        {
+            this.selectedProject = new();
         }
 
         public void SetSelectedProject(ProjectViewModel project)

@@ -117,7 +117,7 @@ namespace UI.MainWindows
         private void OpenProjectsWindow()
         {
             var mainWindow = serviceProvider.GetService<IProjectsWindow>() as ProjectsWindow;
-            
+            selectedProjectService.Reset();
             mainWindow!.ShowDialog();
         }
 
