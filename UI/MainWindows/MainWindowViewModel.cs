@@ -36,6 +36,7 @@ namespace UI.MainWindows
         private string _search;
         private ProjectViewModel project;
         private ObservableCollection<DevAppViewModel> devApps = [];
+        private DevAppViewModel? devApp;
 
         public ObservableCollection<ProjectViewModel> Projects
         {
@@ -68,6 +69,8 @@ namespace UI.MainWindows
 
                 OnPropertyChanged(nameof(this.Project));
                 this.GetProject();
+
+                SelectedDevApp = DevApps.FirstOrDefault(x => x.Id == project!.IDEPathId);
             }
         }
 
@@ -78,6 +81,17 @@ namespace UI.MainWindows
             {
                 devApps = value;
                 OnPropertyChanged(nameof(this.DevApps));
+            }
+        }
+
+        public DevAppViewModel? SelectedDevApp
+        {
+            get { return devApp; }
+            set
+            {
+                devApp = value;
+
+                OnPropertyChanged(nameof(this.SelectedDevApp));
             }
         }
 
