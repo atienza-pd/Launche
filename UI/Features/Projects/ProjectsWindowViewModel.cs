@@ -95,6 +95,7 @@ public class ProjectsWindowViewModel : ViewModelBase
         SaveCommand = new RelayCommand(SaveAsync);
         AddNewCommand = new RelayCommand(AddNew);
         OpenDialogCommand = new RelayCommand(OpenDialog);
+
         this.projectService = projectService;
         this.notificationMessageService = notificationMessageService;
         this.projectWindowEventsService = projectWindowEventsService;

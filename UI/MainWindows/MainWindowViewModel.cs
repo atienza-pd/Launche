@@ -31,10 +31,11 @@ namespace UI.MainWindows
         private readonly INotificationMessageService notificationMessageService;
         private readonly IServiceProvider serviceProvider;
         private readonly ISelectedProjectService selectedProjectService;
+        private readonly IDevAppService devAppService;
         private ObservableCollection<ProjectViewModel> _projects;
         private string _search;
         private ProjectViewModel project;
-
+        private ObservableCollection<DevAppViewModel> devApps = [];
 
         public ObservableCollection<ProjectViewModel> Projects
         {
@@ -70,11 +71,22 @@ namespace UI.MainWindows
             }
         }
 
+        public ObservableCollection<DevAppViewModel> DevApps
+        {
+            get { return devApps; }
+            set
+            {
+                devApps = value;
+                OnPropertyChanged(nameof(this.DevApps));
+            }
+        }
+
         public MainWindowViewModel(
             IProjectService projectService, 
             INotificationMessageService notificationMessageService, 
             IServiceProvider serviceProvider,
-            ISelectedProjectService selectedProjectService
+            ISelectedProjectService selectedProjectService,
+            IDevAppService devAppService
         )
         {
             // initialize non-nullable fields
@@ -86,6 +98,7 @@ namespace UI.MainWindows
             this.notificationMessageService = notificationMessageService;
             this.serviceProvider = serviceProvider;
             this.selectedProjectService = selectedProjectService;
+            this.devAppService = devAppService;
             this.MoveUpCommand = new RelayCommand(MoveUpAsync);
             this.MoveDownCommand = new RelayCommand(MoveDownAsync);
             this.ListItemClickCommand = new RelayCommand(OnListItemClick);
@@ -308,6 +321,11 @@ namespace UI.MainWindows
         public void LoadProjects()
         {
             SearchProjects(this.Search);
+        }
+
+        public async Task LoadDevApps()
+        {
+            this.DevApps = [.. await devAppService.GetAll()];
         }
     }
 }

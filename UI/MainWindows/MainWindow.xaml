@@ -27,7 +27,7 @@
             <RowDefinition Height="28" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Menu  VerticalAlignment="Center">
+        <Menu VerticalAlignment="Center">
             <MenuItem
                 Name="MenuItemManageProjects"
                 Padding="6,4,6,6"
@@ -55,14 +55,20 @@
                 Content="Dev App"
                 Foreground="White" />
         </Grid>
-        <TextBox
+        <ComboBox
             Grid.Row="2"
+            Grid.ColumnSpan="3"
             Height="20"
-            Margin="0,0,5,0"
-            IsReadOnly="True"
-            IsReadOnlyCaretVisible="True"
-            Text="{Binding Project.DevAppName}"
-            TextWrapping="NoWrap" />
+            Margin="0,0,0,0"
+            Padding="1,0,0,0"
+            VerticalContentAlignment="Center"
+            DisplayMemberPath="Name"
+            IsEditable="True"
+            IsTextSearchEnabled="True"
+            ItemsSource="{Binding DevApps}"
+            PreviewTextInput="ComboBox_PreviewTextInput"
+            SelectedItem="{Binding SelectedDevApp, UpdateSourceTrigger=PropertyChanged}"
+            StaysOpenOnEdit="True" />
         <Grid
             Grid.Row="3"
             Margin="0,2,0,0"

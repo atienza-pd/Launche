@@ -39,12 +39,21 @@ public partial class MainWindow : Window
         this.mainWindowViewModel.RequestFocusListView += (_, __) => FocusOnListViewWhenArrowDown();
     }
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
         this.devAppsEventsService.OnDevAppsChanged += DevAppsEventsService_OnDevAppsChanged;
         this.projectWindowEventsService.OnProjectsChanged += ProjectWindowEventsService_OnProjectsChanged;
         this.mainWindowViewModel.LoadProjects();
+        await this.mainWindowViewModel.LoadDevApps();
 
+    }
+
+    private void ComboBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        if (sender is ComboBox comboBox)
+        {
+            comboBox.IsDropDownOpen = true;
+        }
     }
 
     private void DevAppsEventsService_OnDevAppsChanged(object? sender, EventArgs e)
