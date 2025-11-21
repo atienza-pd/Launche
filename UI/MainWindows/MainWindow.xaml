@@ -200,6 +200,10 @@
                 </Style>
                 <ContextMenu x:Key="ItemContextMenu">
                     <MenuItem
+                        x:Name="mnuOpenWith"
+                        Command="{Binding DataContext.LaunchWithCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Header="Launch With" />
+                    <MenuItem
                         x:Name="mnuEdit"
                         Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Header="Edit" />

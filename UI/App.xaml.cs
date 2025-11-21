@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using UI.DevApps;
 using UI.Features;
+using UI.Features.LaunchWith;
 using UI.Features.Projects;
 using UI.MainWindows;
 using UI.Shared.Services;
@@ -70,6 +71,8 @@ namespace UI
                 .AddTransient<DevAppsWindowViewModel>()
                 .AddTransient<ProjectsWindowViewModel>()
                 .AddTransient<MainWindowViewModel>()
+                .AddTransient<LaunchWithWindowViewModel>()
+                .AddTransient<ILaunchWithWindow, LaunchWithWindow>()
                 .AddSingleton<IInitializedDatabaseMigration, InitializedDatabaseMigration>()
 
                 .AddSingleton<INotificationMessageService, NotificationMessageService>()
