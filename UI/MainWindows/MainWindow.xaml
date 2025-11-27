@@ -17,26 +17,26 @@
     mc:Ignorable="d">
     <Grid Margin="5,2,5,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="28" />
-            <RowDefinition Height="33" />
-            <RowDefinition Height="23" />
-            <RowDefinition Height="28" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="28" />
-            <RowDefinition Height="28" />
-            <RowDefinition />
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="33"/>
+            <RowDefinition Height="23"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Menu  VerticalAlignment="Center">
             <MenuItem
                 Name="MenuItemManageProjects"
                 Padding="6,4,6,6"
                 Command="{Binding OpenProjectsWindowCommand}"
-                Header="Add Project" />
+                Header="Add Project"/>
             <MenuItem
                 Padding="6,4,6,6"
                 Command="{Binding OpenDevAppsWindowCommand}"
-                Header="_Manage Dev Apps" />
+                Header="_Manage Dev Apps"/>
         </Menu>
         <Grid
             Grid.Row="1"
@@ -45,15 +45,15 @@
             Background="#404040">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label
                 Grid.Column="0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Content="Dev App"
-                Foreground="White" />
+                Foreground="White"/>
         </Grid>
         <TextBox
             Grid.Row="2"
@@ -62,34 +62,35 @@
             IsReadOnly="True"
             IsReadOnlyCaretVisible="True"
             Text="{Binding Project.DevAppName}"
-            TextWrapping="NoWrap" />
+            TextWrapping="NoWrap"/>
         <Grid
             Grid.Row="3"
             Margin="0,2,0,0"
             Background="#404040">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label
                 HorizontalAlignment="Left"
                 Content="Project Path"
-                Foreground="White" />
+                Foreground="White"/>
         </Grid>
-        <Grid Grid.Row="4" VerticalAlignment="Center">
+        <Grid Grid.Row="4"
+                VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Label
                     Grid.Row="0"
                     VerticalAlignment="Top"
                     Content="Name"
-                    ForceCursor="True" />
+                    ForceCursor="True"/>
                 <TextBox
                     Grid.Row="1"
                     Height="20"
@@ -97,17 +98,17 @@
                     IsReadOnly="True"
                     IsReadOnlyCaretVisible="True"
                     Text="{Binding Project.Name}"
-                    TextWrapping="NoWrap" />
+                    TextWrapping="NoWrap"/>
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Label
                     Grid.Row="0"
                     VerticalAlignment="Top"
-                    Content="File Name" />
+                    Content="File Name"/>
                 <TextBox
                     Grid.Row="1"
                     Height="20"
@@ -115,24 +116,24 @@
                     IsReadOnly="True"
                     IsReadOnlyCaretVisible="True"
                     Text="{Binding Project.Filename}"
-                    TextWrapping="NoWrap" />
+                    TextWrapping="NoWrap"/>
             </Grid>
 
         </Grid>
         <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="121*" />
-                <ColumnDefinition Width="39*" />
+                <ColumnDefinition Width="121*"/>
+                <ColumnDefinition Width="39*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Label
                 Grid.ColumnSpan="2"
                 VerticalAlignment="Center"
                 Content="Path"
-                ForceCursor="True" />
+                ForceCursor="True"/>
             <TextBox
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
@@ -140,23 +141,24 @@
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
                 Text="{Binding Project.Path}"
-                TextWrapping="NoWrap" />
+                TextWrapping="NoWrap"/>
         </Grid>
 
-        <Label Grid.Row="6" Content="{Binding Project.CurrentGitBranch}" />
+        <Label Grid.Row="6"
+                Content="{Binding Project.CurrentGitBranch}"/>
 
         <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="107" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="107"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label
                 Grid.Column="0"
                 Padding="5,0"
                 VerticalAlignment="Center"
                 Content="Search:"
-                ForceCursor="True" />
+                ForceCursor="True"/>
             <TextBox
                 x:Name="txtSearch"
                 Grid.Column="1"
@@ -165,8 +167,10 @@
                 Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"
                 TextWrapping="NoWrap">
                 <TextBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding SearchEnterCommand}" />
-                    <KeyBinding Key="Down" Command="{Binding SearchDownCommand}" />
+                    <KeyBinding Key="Enter"
+                            Command="{Binding SearchEnterCommand}"/>
+                    <KeyBinding Key="Down"
+                            Command="{Binding SearchDownCommand}"/>
                 </TextBox.InputBindings>
             </TextBox>
         </Grid>
@@ -178,58 +182,67 @@
             SelectedItem="{Binding SelectedProject}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding ListItemClickCommand}" />
+                    <i:InvokeCommandAction Command="{Binding ListItemClickCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <ListView.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding ListItemClickCommand}" />
+                <KeyBinding Key="Enter"
+                        Command="{Binding ListItemClickCommand}"/>
             </ListView.InputBindings>
             <ListView.Resources>
                 <DataTemplate x:Key="Templ">
-                    <TextBlock HorizontalAlignment="Left" Text="Name" />
+                    <TextBlock HorizontalAlignment="Left"
+                            Text="Name"/>
                 </DataTemplate>
                 <DataTemplate x:Key="pathTemplate">
-                    <TextBlock HorizontalAlignment="Left" Text="Path" />
+                    <TextBlock HorizontalAlignment="Left"
+                            Text="Path"/>
                 </DataTemplate>
                 <DataTemplate x:Key="GroupTemplate">
-                    <TextBlock HorizontalAlignment="Left" Text="Group" />
+                    <TextBlock HorizontalAlignment="Left"
+                            Text="Group"/>
                 </DataTemplate>
-                <Style x:Key="HeaderStyle" TargetType="GridViewColumnHeader">
-                    <Setter Property="HorizontalContentAlignment" Value="Left" />
-                    <Setter Property="Padding" Value="5,2,2,2" />
+                <Style x:Key="HeaderStyle"
+                        TargetType="GridViewColumnHeader">
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Left"/>
+                    <Setter Property="Padding"
+                            Value="5,2,2,2"/>
                 </Style>
                 <ContextMenu x:Key="ItemContextMenu">
                     <MenuItem
                         x:Name="mnuOpenWith"
                         Command="{Binding DataContext.LaunchWithCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        Header="Launch With" />
+                        Header="Launch With"/>
                     <MenuItem
                         x:Name="mnuEdit"
                         Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        Header="Edit" />
+                        Header="Edit"/>
                     <MenuItem
                         x:Name="mnuMoveUp"
                         Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Header="Move up"
-                        IsEnabled="{Binding EnableMoveUp}" />
+                        IsEnabled="{Binding EnableMoveUp}"/>
                     <MenuItem
                         x:Name="mnuMoveDown"
                         Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Header="Move down"
-                        IsEnabled="{Binding EnableMoveDown}" />
+                        IsEnabled="{Binding EnableMoveDown}"/>
                     <MenuItem
                         x:Name="MnuOpenFolderWindow"
                         Command="{Binding DataContext.OpenFolderWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        Header="Open Folder Window" />
+                        Header="Open Folder Window"/>
                 </ContextMenu>
                 <ToolTip x:Key="ItemToolTip">
-                    <Label Content="Double click to lunch your IDE" />
+                    <Label Content="Double click to lunch your IDE"/>
                 </ToolTip>
             </ListView.Resources>
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="ToolTip" Value="{StaticResource ItemToolTip}" />
-                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
+                    <Setter Property="ToolTip"
+                            Value="{StaticResource ItemToolTip}"/>
+                    <Setter Property="ContextMenu"
+                            Value="{StaticResource ItemContextMenu}"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>
@@ -238,22 +251,22 @@
                         <GridViewColumn
                             Width="Auto"
                             DisplayMemberBinding="{Binding Path=Index}"
-                            Header="#" />
+                            Header="#"/>
                         <GridViewColumn
                             Width="0"
                             DisplayMemberBinding="{Binding Path=GroupName}"
                             HeaderContainerStyle="{StaticResource HeaderStyle}"
-                            HeaderTemplate="{StaticResource GroupTemplate}" />
+                            HeaderTemplate="{StaticResource GroupTemplate}"/>
                         <GridViewColumn
                             Width="Auto"
                             DisplayMemberBinding="{Binding Path=FullName}"
                             HeaderContainerStyle="{StaticResource HeaderStyle}"
-                            HeaderTemplate="{StaticResource Templ}" />
+                            HeaderTemplate="{StaticResource Templ}"/>
                         <GridViewColumn
                             Width="Auto"
                             DisplayMemberBinding="{Binding Path=Path}"
                             HeaderContainerStyle="{StaticResource HeaderStyle}"
-                            HeaderTemplate="{StaticResource pathTemplate}" />
+                            HeaderTemplate="{StaticResource pathTemplate}"/>
                     </GridView.Columns>
                 </GridView>
             </ListView.View>

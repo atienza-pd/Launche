@@ -33,11 +33,6 @@ namespace UI.Features.LaunchWith
             this.openWithWindowViewModel = openWithWindowViewModel;
         }
 
-        private void ListView_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            
-        }
-
         private async void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             await this.openWithWindowViewModel.Init();
@@ -52,8 +47,8 @@ namespace UI.Features.LaunchWith
                 // Divide the available width between columns
                 if (gridView.Columns.Count == 2) // Assuming 2 columns: Name and Actions
                 {
-                    gridView.Columns[0].Width = availableWidth * 0.85; // 80% for Name column
-                    gridView.Columns[1].Width = availableWidth * 0.15; // 10% for Actions column
+                    gridView.Columns[0].Width = availableWidth * 0.90; // 80% for Name column
+                    gridView.Columns[1].Width = availableWidth * 0.10; // 10% for Actions column
                 }
             }
         }

@@ -1,7 +1,4 @@
-﻿using ApplicationCore.Common;
-using ApplicationCore.Features.DevApps;
-using ApplicationCore.Features.Projects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -9,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ApplicationCore.Common;
+using ApplicationCore.Features.DevApps;
+using ApplicationCore.Features.Projects;
 using UI.Shared;
 using UI.Shared.Services;
 
@@ -17,10 +17,12 @@ namespace UI.Features.LaunchWith;
 public class LaunchWithWindowViewModel : ViewModelBase
 {
     public ICommand LaunchProjectDevAppCommand { get; }
+    public ICommand ListItemDoubleClickCommand { get; }
 
     private readonly IDevAppService devAppService;
     private readonly ISelectedProjectService selectedProjectService;
     private readonly INotificationMessageService notificationMessageService;
+
     private ObservableCollection<DevAppViewModel> devApps = [];
     private ProjectViewModel selectedProject = new();
 
@@ -44,12 +46,22 @@ public class LaunchWithWindowViewModel : ViewModelBase
         }
     }
 
-    public LaunchWithWindowViewModel(IDevAppService devAppService, ISelectedProjectService selectedProjectService, INotificationMessageService notificationMessageService)
+    public LaunchWithWindowViewModel(
+        IDevAppService devAppService,
+        ISelectedProjectService selectedProjectService,
+        INotificationMessageService notificationMessageService
+    )
     {
         this.devAppService = devAppService;
         this.selectedProjectService = selectedProjectService;
         this.notificationMessageService = notificationMessageService;
-        this.LaunchProjectDevAppCommand = new RelayCommand(param => LaunchProjectDevApp((DevAppViewModel)param!));
+        this.ListItemDoubleClickCommand = new RelayCommand(param =>
+            LaunchProjectDevApp((DevAppViewModel)param!)
+        );
+
+        this.LaunchProjectDevAppCommand = new RelayCommand(param =>
+            LaunchProjectDevApp((DevAppViewModel)param!)
+        );
     }
 
     private void LaunchProjectDevApp(DevAppViewModel devAppViewModel)
@@ -110,12 +122,9 @@ public class LaunchWithWindowViewModel : ViewModelBase
         }
     }
 
-    
-
     public async Task Init()
     {
         SelectedProject = this.selectedProjectService.GetSelectedProject() ?? new();
         DevApps = [.. await devAppService.GetAll()];
     }
 }
-
