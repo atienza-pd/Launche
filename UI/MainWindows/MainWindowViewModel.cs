@@ -1,12 +1,13 @@
-﻿using ApplicationCore.Common;
-using ApplicationCore.Features.DevApps;
-using ApplicationCore.Features.Projects;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
+using ApplicationCore.Common;
+using ApplicationCore.Features.DevApps;
+using ApplicationCore.Features.Projects;
+using Microsoft.Extensions.DependencyInjection;
 using UI.Features;
+using UI.Features.LaunchWith;
 using UI.Shared;
 using UI.Shared.Services;
 
@@ -21,6 +22,7 @@ namespace UI.MainWindows
         public ICommand SearchEnterCommand { get; }
         public ICommand SearchDownCommand { get; }
         public ICommand EditCommand { get; }
+        public ICommand LaunchWithCommand { get; }
         public RelayCommand OpenDevAppsWindowCommand { get; }
         public RelayCommand OpenProjectsWindowCommand { get; }
 
@@ -34,7 +36,6 @@ namespace UI.MainWindows
         private ObservableCollection<ProjectViewModel> _projects;
         private string _search;
         private ProjectViewModel project;
-
 
         public ObservableCollection<ProjectViewModel> Projects
         {
@@ -54,7 +55,6 @@ namespace UI.MainWindows
                 project = value!;
 
                 OnPropertyChanged(nameof(this.Project));
-
             }
         }
 
@@ -71,8 +71,8 @@ namespace UI.MainWindows
         }
 
         public MainWindowViewModel(
-            IProjectService projectService, 
-            INotificationMessageService notificationMessageService, 
+            IProjectService projectService,
+            INotificationMessageService notificationMessageService,
             IServiceProvider serviceProvider,
             ISelectedProjectService selectedProjectService
         )
@@ -95,6 +95,15 @@ namespace UI.MainWindows
             this.OpenDevAppsWindowCommand = new RelayCommand(OpenDevAppWindow);
             this.OpenProjectsWindowCommand = new RelayCommand(OpenProjectsWindow);
             this.EditCommand = new RelayCommand(EditProject);
+            this.LaunchWithCommand = new RelayCommand(LaunchWith);
+        }
+
+        private void LaunchWith()
+        {
+            var window = serviceProvider.GetService<ILaunchWithWindow>();
+
+            this.selectedProjectService.SetSelectedProject(this.SelectedProject!);
+            window!.ShowDialog();
         }
 
         // Made virtual so tests can override and avoid opening a real dialog
@@ -181,14 +190,18 @@ namespace UI.MainWindows
             }
             catch (Exception ex)
             {
-                notificationMessageService.Create(ex.Message, "Open Project", NotificationType.Error);
+                notificationMessageService.Create(
+                    ex.Message,
+                    "Open Project",
+                    NotificationType.Error
+                );
             }
         }
 
         private async void MoveDownAsync()
         {
             var result = await projectService.SortDown(project.SortId);
-            
+
             if (!result)
             {
                 return;
@@ -212,7 +225,6 @@ namespace UI.MainWindows
         {
             if (project is null)
             {
-                
                 return;
             }
 
@@ -230,11 +242,23 @@ namespace UI.MainWindows
 
                 if (project.HasFileName)
                 {
-                    this.OpenIDEWithFileName(project.FullPath, project.DevAppPath);
+                    var (success, message) = LaunchProjectExecutor.OpenIDEWithFileName(
+                        project.FullPath,
+                        project.DevAppPath
+                    );
+
+                    if (!success)
+                    {
+                        notificationMessageService.Create(
+                            message,
+                            "Open Project Error",
+                            NotificationType.Error
+                        );
+                    }
                     return;
                 }
 
-                OpenIDE(
+                LaunchProjectExecutor.OpenIDE(
                     new()
                     {
                         FileName = project.DevAppPath,
@@ -253,38 +277,8 @@ namespace UI.MainWindows
             }
         }
 
-        private void OpenIDEWithFileName(string fullFilePath, string devAppPath)
-        {
-            if (File.Exists(fullFilePath) is false)
-            {
-                notificationMessageService.Create(
-                    "File not found!",
-                    "Open Project Error",
-                    NotificationType.Error
-                );
-                return;
-            }
-
-            OpenIDE(
-                new()
-                {
-                    FileName = devAppPath,
-                    Arguments = $"\"{fullFilePath}\"",
-                    UseShellExecute = true,
-                }
-            );
-        }
-
-        private static void OpenIDE(ProcessStartInfo processInfo)
-        {
-            using Process process = new();
-            process.StartInfo = processInfo;
-            process.Start();
-        }
-
         private async void GetProject()
         {
-
             this.Project = await projectService.GetOne(SelectedProject!.Id);
         }
 
@@ -302,7 +296,12 @@ namespace UI.MainWindows
         private async void SearchProjects(string search)
         {
             var result = await projectService.GetAll();
-            this.Projects = [.. result.Projects.Where(x => x.FullName.Contains(search, StringComparison.CurrentCultureIgnoreCase))];
+            this.Projects =
+            [
+                .. result.Projects.Where(x =>
+                    x.FullName.Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                ),
+            ];
         }
 
         public void LoadProjects()
